@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 @Entity
 public class Korisnik implements Serializable {
+    public enum TipKorisnika {Prodavac, Kupac, Administrator};
     @Column
     private String ime;
     @Column
@@ -37,6 +38,8 @@ public class Korisnik implements Serializable {
     private ArrayList<Proizvod> kupljeniPrizvodi = new ArrayList<>();
     @Column
     private double prosenaOcena;
+    @Column(name = "tip_korisnika") @Enumerated
+    private TipKorisnika tipKorisnika;
 
     public static String encrypt(String input) {
         char[] chars = input.toCharArray();
