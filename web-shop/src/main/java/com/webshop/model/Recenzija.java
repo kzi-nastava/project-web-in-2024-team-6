@@ -1,9 +1,6 @@
 package com.webshop.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -19,7 +16,7 @@ public class Recenzija implements Serializable {
     @Column(name = "datum_recenzije")
     private LocalDate datumRecenzije;
     @ManyToOne
-    @Column
+    @JoinColumn(name = "korisnik_id")
     private Korisnik korisnik;
 
 }

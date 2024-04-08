@@ -10,9 +10,8 @@ public class Ponuda implements Serializable {
     private double Cena;
     @Id
     private Long id;
-    @OneToOne
-    @Column
-    private Kupac kupacKojiJeDaoPonudu;
+    @JoinColumn(name = "kupac_id") @OneToOne
+    private Korisnik kupacKojiJeDaoPonudu;
     @ManyToOne
     private Proizvod proizvod;
 

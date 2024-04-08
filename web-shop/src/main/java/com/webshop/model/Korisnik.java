@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.ArrayList;
+
 @Entity
 public class Korisnik implements Serializable {
     @Column
@@ -30,6 +32,12 @@ public class Korisnik implements Serializable {
     @Id
     private Long id;
     private static final char SECRET_KEY = 'K';
+
+    @OneToMany
+    private ArrayList<Proizvod> kupljeniPrizvodi = new ArrayList<>();
+    @Column
+    private double prosenaOcena;
+
     public static String encrypt(String input) {
         char[] chars = input.toCharArray();
         for (int i = 0; i < chars.length; i++) {
