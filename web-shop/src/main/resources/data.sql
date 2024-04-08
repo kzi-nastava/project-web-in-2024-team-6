@@ -2,3 +2,5 @@ INSERT INTO Proizvod (naziv, opis, slika, cena, datum_objavljivanja, ostavljenja
 
 INSERT INTO Kategorija (naziv) values ('Komjuterske periferije');
 
+
+

@@ -37,11 +37,11 @@ public class Proizvod implements Serializable {
     @Column(name = "tip_prodaje") @Enumerated
     private tipprodaje tipProdaje;
 
-    /*@Column @OneToMany
-    private Ponuda ponude;*/
+    @Column @OneToMany
+    private Set<Ponuda> ponude;
 
-    /*@Column @OneToMany(mappedBy = "proizovd")
-    private Prodavac prodavac */
+    @JoinColumn(name = "prodavac_id") @ManyToOne
+    private Korisnik prodavac;
 
     @Column(name = "ostavljenja_recenzija_od_strane_kupca")
     private boolean ostavljenaRecenzijaOdStraneKupca;
