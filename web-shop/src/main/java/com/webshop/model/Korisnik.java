@@ -52,20 +52,6 @@ public class Korisnik implements Serializable {
     @Column
     private double prosenaOcena;
 
-
-    @Column(name = "tip_korisnika") @Enumerated
-    private TipKorisnika tipKorisnika;
-
-
-    public static String encrypt(String input) {
-        char[] chars = input.toCharArray();
-        for (int i = 0; i < chars.length; i++) {
-            chars[i] = (char) (chars[i] ^ SECRET_KEY);
-        }
-        return new String(chars);
-    }
-
-
     @Column(name = "uloga") @Enumerated
     private TipKorisnika uloga;
 
