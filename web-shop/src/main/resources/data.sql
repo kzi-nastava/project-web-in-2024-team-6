@@ -2,10 +2,16 @@ INSERT INTO Proizvod (naziv, opis, slika, cena, datum_objavljivanja, ostavljenja
 
 INSERT INTO Kategorija (naziv) values ('Komjuterske periferije');
 
---CREATE TYPE TipKorosnika AS ENUM('Prodavac', 'Kupac', 'Administrator');
 INSERT INTO Korisnik (ime, prezime, korisnicko_ime, mejl_adresa, broj_telefona, lozinka, datum_rodjenja, putanja_do_slike, opis, blokiran,uloga, prosena_ocena)
 VALUES ('John', 'Doe', 'johndoe', 'john@example.com', '123456789', 'password', '1990-05-15', '/path/to/image', 'Description', false, 1, 0.0);
 
+INSERT INTO Korisnik (ime, prezime, korisnicko_ime, mejl_adresa, broj_telefona, lozinka, datum_rodjenja, putanja_do_slike, opis, blokiran,uloga, prosena_ocena)
+VALUES ('Mark', 'Hunter', 'mrkhunter', 'mark@example.com', '987654321', 'password2', '1987-08-12', '/path/to/image', 'Description', false, 0, 0.0);
+
 INSERT INTO Ponuda (Cena, kupac_id, proizvod_id) VALUES (150.0, 1, 1);
 
+INSERT INTO Recenzija (ocena, komentar, datum_recenzije, korisnik_id) VALUES (5.4,'korektan','2024-04-09',1);
+
+--INSERT INTO PrijavaProfila (razlogPrijave,datumPodnosenjaPrijave, korisnik_podneo_prijavu_id,korisnik_prijavljen_id,statusPrijave)
+--VALUES ('nepristojan','2024-05-09',2,1,0);
 
