@@ -6,6 +6,8 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 public class Korisnik implements Serializable {
@@ -46,8 +48,8 @@ public class Korisnik implements Serializable {
     @Column(nullable = false)
     private boolean blokiran;
 
-    @OneToMany
-    private ArrayList<Proizvod> kupljeniPrizvodi = new ArrayList<>();
+    @OneToMany(mappedBy = "kupac")
+    private Set<Proizvod> kupljeniPrizvodi  = new HashSet<>();
 
     @Column
     private double prosenaOcena;
@@ -55,5 +57,106 @@ public class Korisnik implements Serializable {
     @Column(name = "uloga") @Enumerated
     private TipKorisnika uloga;
 
+    public Long getId() {
+        return id;
+    }
+
+    public String getIme() {
+        return ime;
+    }
+
+    public String getPrezime() {
+        return prezime;
+    }
+
+    public String getKorisnickoIme() {
+        return korisnickoIme;
+    }
+
+    public String getMejlAdresa() {
+        return mejlAdresa;
+    }
+
+    public String getBrojTelefona() {
+        return brojTelefona;
+    }
+
+    public String getLozinka() {
+        return lozinka;
+    }
+
+    public Date getDatumRodjenja() {
+        return datumRodjenja;
+    }
+
+    public String getPutanjaDoSlike() {
+        return putanjaDoSlike;
+    }
+
+    public String getOpis() {
+        return opis;
+    }
+
+    public boolean isBlokiran() {
+        return blokiran;
+    }
+
+
+
+    public double getProsenaOcena() {
+        return prosenaOcena;
+    }
+
+    public TipKorisnika getUloga() {
+        return uloga;
+    }
+
+    public void setIme(String ime) {
+        this.ime = ime;
+    }
+
+    public void setPrezime(String prezime) {
+        this.prezime = prezime;
+    }
+
+    public void setKorisnickoIme(String korisnickoIme) {
+        this.korisnickoIme = korisnickoIme;
+    }
+
+    public void setMejlAdresa(String mejlAdresa) {
+        this.mejlAdresa = mejlAdresa;
+    }
+
+    public void setBrojTelefona(String brojTelefona) {
+        this.brojTelefona = brojTelefona;
+    }
+
+    public void setLozinka(String lozinka) {
+        this.lozinka = lozinka;
+    }
+
+    public void setDatumRodjenja(Date datumRodjenja) {
+        this.datumRodjenja = datumRodjenja;
+    }
+
+    public void setPutanjaDoSlike(String putanjaDoSlike) {
+        this.putanjaDoSlike = putanjaDoSlike;
+    }
+
+    public void setOpis(String opis) {
+        this.opis = opis;
+    }
+
+    public void setBlokiran(boolean blokiran) {
+        this.blokiran = blokiran;
+    }
+
+    public void setProsenaOcena(double prosenaOcena) {
+        this.prosenaOcena = prosenaOcena;
+    }
+
+    public void setUloga(TipKorisnika uloga) {
+        this.uloga = uloga;
+    }
 
 }

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 
@@ -25,8 +26,8 @@ public class Proizvod implements Serializable {
     @Column
     private String slika;
 
-    @OneToMany(mappedBy = "proizvod")
-    private Set<Kategorija> kategorija;
+    @ManyToOne
+    private Kategorija kategorija;
 
     @Column
     private double cena;
@@ -37,7 +38,7 @@ public class Proizvod implements Serializable {
     @Column(name = "tip_prodaje") @Enumerated
     private tipprodaje tipProdaje;
 
-    @Column @OneToMany
+    @Column @OneToMany(mappedBy = "proizvod")
     private Set<Ponuda> ponude;
 
     @JoinColumn(name = "prodavac_id") @ManyToOne
@@ -52,4 +53,110 @@ public class Proizvod implements Serializable {
     @Column
     private boolean prodat;
 
+    @ManyToOne
+    private Korisnik kupac;
+
+    public void setKupac(Korisnik kupac) {
+        this.kupac = kupac;
+    }
+
+    public void setNaziv(String naziv) {
+        this.naziv = naziv;
+    }
+
+    public void setOpis(String opis) {
+        this.opis = opis;
+    }
+
+    public void setSlika(String slika) {
+        this.slika = slika;
+    }
+
+    public void setKategorija(Kategorija kategorija) {
+        this.kategorija = kategorija;
+    }
+
+    public void setCena(double cena) {
+        this.cena = cena;
+    }
+
+    public void setDatumObjavljivanja(Date datumObjavljivanja) {
+        this.datumObjavljivanja = datumObjavljivanja;
+    }
+
+    public void setTipProdaje(tipprodaje tipProdaje) {
+        this.tipProdaje = tipProdaje;
+    }
+
+    public void setPonude(Set<Ponuda> ponude) {
+        this.ponude = ponude;
+    }
+
+    public void setProdavac(Korisnik prodavac) {
+        this.prodavac = prodavac;
+    }
+
+    public void setOstavljenaRecenzijaOdStraneKupca(boolean ostavljenaRecenzijaOdStraneKupca) {
+        this.ostavljenaRecenzijaOdStraneKupca = ostavljenaRecenzijaOdStraneKupca;
+    }
+
+    public void setOstavljenaRecenzijaOdStraneProdavca(boolean ostavljenaRecenzijaOdStraneProdavca) {
+        this.ostavljenaRecenzijaOdStraneProdavca = ostavljenaRecenzijaOdStraneProdavca;
+    }
+
+    public void setProdat(boolean prodat) {
+        this.prodat = prodat;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public String getNaziv() {
+        return naziv;
+    }
+
+    public String getOpis() {
+        return opis;
+    }
+
+    public String getSlika() {
+        return slika;
+    }
+
+    public Kategorija getKategorija() {
+        return kategorija;
+    }
+
+    public double getCena() {
+        return cena;
+    }
+
+    public Date getDatumObjavljivanja() {
+        return datumObjavljivanja;
+    }
+
+    public tipprodaje getTipProdaje() {
+        return tipProdaje;
+    }
+
+    public Set<Ponuda> getPonude() {
+        return ponude;
+    }
+
+    public Korisnik getProdavac() {
+        return prodavac;
+    }
+
+    public boolean isOstavljenaRecenzijaOdStraneKupca() {
+        return ostavljenaRecenzijaOdStraneKupca;
+    }
+
+    public boolean isOstavljenaRecenzijaOdStraneProdavca() {
+        return ostavljenaRecenzijaOdStraneProdavca;
+    }
+
+    public boolean isProdat() {
+        return prodat;
+    }
 }

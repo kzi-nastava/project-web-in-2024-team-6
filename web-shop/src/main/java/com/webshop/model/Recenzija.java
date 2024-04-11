@@ -25,4 +25,39 @@ public class Recenzija implements Serializable {
     @JoinColumn(name = "korisnik_id")
     private Korisnik korisnik;
 
+    public int getOcena() {
+        return ocena;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getKomentar() {
+        return komentar;
+    }
+
+    public LocalDate getDatumRecenzije() {
+        return datumRecenzije;
+    }
+
+    public Korisnik getKorisnik() {
+        return korisnik;
+    }
+
+    public void setOcena(int ocena) {
+        this.ocena = ocena;
+    }
+
+    public void setKomentar(String komentar) {
+        this.komentar = komentar;
+    }
+
+    public void setDatumRecenzije(LocalDate datumRecenzije) {
+        this.datumRecenzije = datumRecenzije;
+    }
+
+    public void setKorisnik(Korisnik korisnik) {
+        this.korisnik = korisnik;
+    }
 }

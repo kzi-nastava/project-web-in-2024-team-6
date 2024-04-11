@@ -20,4 +20,31 @@ public class Ponuda implements Serializable {
     @ManyToOne
     private Proizvod proizvod;
 
+    public double getCena() {
+        return Cena;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Korisnik getKupacKojiJeDaoPonudu() {
+        return kupacKojiJeDaoPonudu;
+    }
+
+    public Proizvod getProizvod() {
+        return proizvod;
+    }
+
+    public void setCena(double cena) {
+        Cena = cena;
+    }
+
+    public void setKupacKojiJeDaoPonudu(Korisnik kupacKojiJeDaoPonudu) {
+        this.kupacKojiJeDaoPonudu = kupacKojiJeDaoPonudu;
+    }
+
+    public void setProizvod(Proizvod proizvod) {
+        this.proizvod = proizvod;
+    }
 }
