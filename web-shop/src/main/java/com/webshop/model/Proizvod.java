@@ -26,7 +26,7 @@ public class Proizvod implements Serializable {
     @Column
     private String slika;
 
-    @ManyToOne
+    @ManyToOne @JoinColumn
     private Kategorija kategorija;
 
     @Column
