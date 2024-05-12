@@ -3,8 +3,6 @@ package com.webshop.model;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -16,7 +14,7 @@ public class Korisnik implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    public enum TipKorisnika {Prodavac, Kupac, Administrator};
+    public enum TipKorisnika {Prodavac, Kupac, Administrator}
 
     @Column
     private String ime;
@@ -24,38 +22,41 @@ public class Korisnik implements Serializable {
     @Column
     private String prezime;
 
-    @Column(unique = true, name = "korisnicko_ime")
+    @Column(unique = true/*, name = "korisnicko_ime"*/)
     private String korisnickoIme;
 
-    @Column(unique = true, name = "mejl_adresa")
+    @Column(unique = true/*, name = "mejl_adresa"*/)
     private String mejlAdresa;
 
-    @Column(unique = true, name = "broj_telefona")
+    @Column(unique = true/*, name = "broj_telefona"*/)
     private String brojTelefona;
 
     @Column(nullable = false)
     private String lozinka;
 
-    @Column(name = "datum_rodjenja")
+    @Column//(name = "datum_rodjenja")
     private Date datumRodjenja;
 
-    @Column(name = "putanja_do_slike")
+    @Column//(name = "putanja_do_slike")
     private String putanjaDoSlike;
 
     @Column
     private String opis;
 
+    @Column/*(name = "uloga")*/ @Enumerated
+    private TipKorisnika uloga;
+
     @Column(nullable = false)
     private boolean blokiran;
 
-    @OneToMany(mappedBy = "kupac")
-    private Set<Proizvod> kupljeniPrizvodi  = new HashSet<>();
+    @OneToMany//(mappedBy = "kupac") skloniti mappedby mogu biti kupljeni ili koji su na prodaju
+    private Set<Proizvod> Prizvodi  = new HashSet<>();
+
+    @Column @OneToMany
+    private Set<Recenzija> recenzije = new HashSet<>();
 
     @Column
-    private double prosenaOcena;
-
-    @Column(name = "uloga") @Enumerated
-    private TipKorisnika uloga;
+    private double prosecnaOcena;
 
     public Long getId() {
         return id;
@@ -104,7 +105,7 @@ public class Korisnik implements Serializable {
 
 
     public double getProsenaOcena() {
-        return prosenaOcena;
+        return prosecnaOcena;
     }
 
     public TipKorisnika getUloga() {
@@ -152,7 +153,7 @@ public class Korisnik implements Serializable {
     }
 
     public void setProsenaOcena(double prosenaOcena) {
-        this.prosenaOcena = prosenaOcena;
+        this.prosecnaOcena = prosenaOcena;
     }
 
     public void setUloga(TipKorisnika uloga) {

@@ -17,10 +17,10 @@ public class PrijavaProfila implements Serializable {
     @Column
     private Date datumPodnosenjaPrijave;
 
-    @JoinColumn(name = "korisnik_podneo_prijavu_id") @OneToOne
+    @JoinColumn(name = "korisnik_podneo_prijavu_id") @ManyToOne
     private Korisnik korisnikKojiJePodneoPrijavu;
 
-    @JoinColumn(name = "korisnik_prijavljen_id") @OneToOne
+    @JoinColumn(name = "korisnik_prijavljen_id") @ManyToOne
     private Korisnik korisnikNaKogaSeOdnosiPrijavu;
 
     public enum statPrijave {podneta, prihvacena, odbijena};

@@ -11,7 +11,7 @@ import java.util.Set;
 @Entity
 public class Proizvod implements Serializable {
 
-    public enum tipprodaje {aukcija, fiksnaCena};
+    public enum tipprodaje {aukcija, fiksnaCena}
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,16 +32,16 @@ public class Proizvod implements Serializable {
     @Column
     private double cena;
 
-    @Column(name = "datum_objavljivanja")
-    private Date datumObjavljivanja;
-
-    @Column(name = "tip_prodaje") @Enumerated
+    @Column @Enumerated
     private tipprodaje tipProdaje;
 
-    @Column @OneToMany(mappedBy = "proizvod")
+    @Column
+    private Date datumObjavljivanja;
+
+    @Column @OneToMany
     private Set<Ponuda> ponude;
 
-    @JoinColumn(name = "prodavac_id") @ManyToOne
+    @JoinColumn/*(name = "prodavac_id") */@ManyToOne
     private Korisnik prodavac;
 
     @Column(name = "ostavljenja_recenzija_od_strane_kupca")
@@ -52,13 +52,6 @@ public class Proizvod implements Serializable {
 
     @Column
     private boolean prodat;
-
-    @ManyToOne
-    private Korisnik kupac;
-
-    public void setKupac(Korisnik kupac) {
-        this.kupac = kupac;
-    }
 
     public void setNaziv(String naziv) {
         this.naziv = naziv;
