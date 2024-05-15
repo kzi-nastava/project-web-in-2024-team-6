@@ -1,15 +1,16 @@
 package com.webshop.dto;
 
 
+import com.webshop.model.Kategorija;
 import com.webshop.model.Proizvod;
 
-public class ProductDto {
+public class ProizvodDto {
 
     private String naziv;
 
     private String opis;
 
-    private String kategorija;
+    private Kategorija kategorija;
 
     private double cena;
 
@@ -17,9 +18,9 @@ public class ProductDto {
 
     private Proizvod.tipprodaje tipProdaje;
 
-    public ProductDto() { }
+    public ProizvodDto() { }
 
-    public ProductDto(String naziv, String opis, String kategorija, double cena, String slika, Proizvod.tipprodaje tipProdaje) {
+    public ProizvodDto(String naziv, String opis, Kategorija kategorija, double cena, String slika, Proizvod.tipprodaje tipProdaje) {
         this.naziv = naziv;
         this.opis = opis;
         this.kategorija = kategorija;
@@ -36,7 +37,7 @@ public class ProductDto {
         return opis;
     }
 
-    public String getKategorija() {
+    public Kategorija getKategorija() {
         return kategorija;
     }
 
@@ -60,7 +61,7 @@ public class ProductDto {
         this.opis = opis;
     }
 
-    public void setKategorija(String kategorija) {
+    public void setKategorija(Kategorija kategorija) {
         this.kategorija = kategorija;
     }
 
@@ -75,4 +76,5 @@ public class ProductDto {
     public void setTipProdaje(Proizvod.tipprodaje tipProdaje) {
         this.tipProdaje = tipProdaje;
     }
+
 }
