@@ -1,5 +1,6 @@
 package com.webshop.controller;
 
+import com.webshop.dto.KorisnikDto;
 import com.webshop.dto.LoginDto;
 import com.webshop.model.Korisnik;
 import com.webshop.repository.KorisnikRepository;
@@ -8,9 +9,9 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RestController
 public class KorisnikRestController {
@@ -61,6 +62,7 @@ public class KorisnikRestController {
         return new ResponseEntity("Vasa registracija je prihvacena, uspesno ste registrovali", HttpStatus.OK);
     }
 
+
     //provera da li postoje svi podaci(potrebni podaci: ime, prezime, jedinstveno korisničko ime, mejl adresa, broj telefona i lozinka)
     boolean daLiSuSviPodaciUneti(Korisnik korisnik){
         return  (korisnik.getUloga() != null) &&
@@ -70,6 +72,23 @@ public class KorisnikRestController {
                 (korisnik.getMejlAdresa() != null && !korisnik.getMejlAdresa().isBlank()) &&
                 (korisnik.getBrojTelefona() != null && !korisnik.getBrojTelefona().isBlank()) &&
                 (korisnik.getLozinka() != null && !korisnik.getLozinka().isBlank());
+    }
+
+    @PutMapping("/{id}/profil")
+    public ResponseEntity azurirajProfilKorisnika(@PathVariable("id") Long id, @RequestBody KorisnikDto korisnikDto,
+    @RequestHeader("Uloga") String uloga){
+       try{
+           Optional<Korisnik> korisnikOptional = Optional.ofNullable(korisnikService.nadjiPoId(id));
+           if(korisnikOptional.isPresent()) {
+               Korisnik korisnik = korisnikOptional.get();
+               korisnikService.azurirajProfil(korisnik, korisnikDto, uloga);
+               return new ResponseEntity("Uspesno ste azurirali profil", HttpStatus.OK);
+           }else {
+               return ResponseEntity.notFound().build();
+           }
+       } catch (Exception e) {
+            return new ResponseEntity("Doslo je do greske pri azuriranju profila", HttpStatus.BAD_REQUEST);
+       }
     }
 
 }
