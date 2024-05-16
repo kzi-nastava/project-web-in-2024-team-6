@@ -3,14 +3,15 @@ package com.webshop.controller;
 import com.webshop.dto.KorisnikDto;
 import com.webshop.dto.LoginDto;
 import com.webshop.model.Korisnik;
-import com.webshop.repository.KorisnikRepository;
 import com.webshop.service.KorisnikService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -74,21 +75,43 @@ public class KorisnikRestController {
                 (korisnik.getLozinka() != null && !korisnik.getLozinka().isBlank());
     }
 
-    @PutMapping("/{id}/profil")
-    public ResponseEntity azurirajProfilKorisnika(@PathVariable("id") Long id, @RequestBody KorisnikDto korisnikDto,
-    @RequestHeader("Uloga") String uloga){
-       try{
-           Optional<Korisnik> korisnikOptional = Optional.ofNullable(korisnikService.nadjiPoId(id));
-           if(korisnikOptional.isPresent()) {
-               Korisnik korisnik = korisnikOptional.get();
-               korisnikService.azurirajProfil(korisnik, korisnikDto, uloga);
-               return new ResponseEntity("Uspesno ste azurirali profil", HttpStatus.OK);
-           }else {
-               return ResponseEntity.notFound().build();
-           }
-       } catch (Exception e) {
-            return new ResponseEntity("Doslo je do greske pri azuriranju profila", HttpStatus.BAD_REQUEST);
-       }
+
+
+    @PutMapping("/korisnici/{id}")
+    public ResponseEntity<Korisnik> azurirajKorisnika(@PathVariable("id") String id,
+                                                      @RequestBody KorisnikDto azuriranKorisnik/*,@RequestHeader("Uloga") String uloga*/) {
+        try {
+            Korisnik azuriraniKorisnik = korisnikService.azurirajKorisnika(id, azuriranKorisnik/*,uloga*/);
+            return new ResponseEntity<>(azuriraniKorisnik, HttpStatus.OK);
+        } catch (EntityNotFoundException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
+
+
+    @GetMapping("/korisnici")
+    public ResponseEntity<List<Korisnik>> nadjiSveKorisnike(){
+        try{
+            List<Korisnik> korisnici = korisnikService.nadjiSve();
+            return new ResponseEntity<>(korisnici, HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/korisnici/{id}")
+    public ResponseEntity<Korisnik> prikaziKorisnika(@PathVariable("id") String id){
+        try{
+            Optional<Korisnik> k = korisnikService.nadjiPoId(id);
+            return new ResponseEntity(k,HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity("Doslo je do greske",HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 
 }

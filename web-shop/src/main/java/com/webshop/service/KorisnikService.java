@@ -7,6 +7,9 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Optional;
+
 import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 
 @Service
@@ -37,35 +40,54 @@ public class KorisnikService {
     }
 
 
-    public void azurirajProfil(Korisnik korisnik, KorisnikDto korisnikdto, String uloga) throws Exception {
+    public Korisnik azurirajKorisnika(String id, KorisnikDto azuriranKorisnik){
 
-       if (uloga.equals("Administrator")){
-           throw new Exception("Nemate dozvolu da azurirate profiil. ");
-       }
+        Korisnik korisnik = korisnikRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Korisnik sa ID-jem " + id + " nije pronađen."));
 
-       if (!korisnik.getLozinka().equals(korisnikdto.getTrenutnaLozinka())) {
-           throw new Exception("Pogresna trenutna lozinka. ");
-       }
+        if (korisnik.getUloga() == Korisnik.TipKorisnika.Administrator) {
+            throw new IllegalArgumentException("Korisnik sa ulogom Administrator ne može ažurirati profil.");
+        }
 
-       korisnik.setDatumRodjenja(korisnikdto.getDatumRodjenja());
-       korisnik.setPutanjaDoSlike(korisnikdto.getProfilnaSlika());
-       korisnik.setOpis(korisnikdto.getOpis());
-       korisnik.setIme(korisnikdto.getIme());
-       korisnik.setPrezime(korisnikdto.getPrezime());
-       korisnik.setBrojTelefona(korisnikdto.getBrojTelefona());
+        // Provera trenutne lozinke
+        if (!korisnik.getLozinka().equals(azuriranKorisnik.getTrenutnaLozinka())) {
+            throw new IllegalArgumentException("Trenutna lozinka nije ispravna.");
+        }
 
-       if (korisnikdto.getNovaLozinka() != null && !korisnikdto.getNovaLozinka().isEmpty()){
-           korisnik.setLozinka(korisnikdto.getNovaLozinka());
-       }
+        // Ažuriranje podataka
+        korisnik.setIme(azuriranKorisnik.getIme());
+        korisnik.setPrezime(azuriranKorisnik.getPrezime());
+        korisnik.setDatumRodjenja(azuriranKorisnik.getDatumRodjenja());
+        korisnik.setPutanjaDoSlike(azuriranKorisnik.getProfilnaSlika());
+        korisnik.setOpis(azuriranKorisnik.getOpis());
+        korisnik.setBrojTelefona(azuriranKorisnik.getBrojTelefona());
 
-       korisnik.setKorisnickoIme(korisnikdto.getKorisnickoIme());
-       korisnik.setMejlAdresa(korisnikdto.getEmail());
+        // Ažuriranje korisničkog imena, mejl adrese i lozinke samo ako su promenjeni
+        if (!korisnik.getKorisnickoIme().equals(azuriranKorisnik.getKorisnickoIme())) {
+            korisnik.setKorisnickoIme(azuriranKorisnik.getKorisnickoIme());
+        }
+        if (!korisnik.getMejlAdresa().equals(azuriranKorisnik.getEmail())) {
+            korisnik.setMejlAdresa(azuriranKorisnik.getEmail());
+        }
+        if (azuriranKorisnik.getNovaLozinka() != null && !azuriranKorisnik.getNovaLozinka().isEmpty()) {
+            korisnik.setLozinka(azuriranKorisnik.getNovaLozinka());
+        }
 
+        return korisnikRepository.save(korisnik);
     }
 
-    public Korisnik nadjiPoId(Long Id){
-        return korisnikRepository.findById(String.valueOf(id)).orElseThrow(() ->
-                new EntityNotFoundException());
+
+
+    public Optional<Korisnik> nadjiPoId(String id){
+        return korisnikRepository.findById(id);
     }
+
+    public List<Korisnik> nadjiSve(){
+       return korisnikRepository.findAll();
+    }
+
+
+
+
 
 }
