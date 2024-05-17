@@ -49,6 +49,14 @@ public class Korisnik implements Serializable {
     @Column(nullable = false)
     private boolean blokiran;
 
+    public Set<Proizvod> getPrizvodi() {
+        return Prizvodi;
+    }
+
+    public Set<Recenzija> getRecenzije() {
+        return recenzije;
+    }
+
     @OneToMany//(mappedBy = "kupac") skloniti mappedby mogu biti kupljeni ili koji su na prodaju
     private Set<Proizvod> Prizvodi  = new HashSet<>();
 
