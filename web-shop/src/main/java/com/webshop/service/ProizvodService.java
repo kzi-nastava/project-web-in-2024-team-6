@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ProizvodService {
@@ -38,6 +39,12 @@ public class ProizvodService {
         }
 
         return new PageImpl<>(spremniProizvodi, stranica, proizvodi.getTotalElements());
+    }
+
+    public Optional<Proizvod> getProizvod(Long id) {
+
+        return proizvodRepository.findById(id);
+
     }
 
 }

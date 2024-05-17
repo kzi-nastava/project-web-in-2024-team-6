@@ -1,6 +1,7 @@
 package com.webshop.controller;
 
 import com.webshop.dto.ProizvodDto;
+import com.webshop.model.Proizvod;
 import com.webshop.service.ProizvodService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/products")
@@ -30,5 +33,18 @@ public class ProizvodRestController {
             return ResponseEntity.ok(strProizvoda);
         }
         return ResponseEntity.ok(proizvodService.getProizvodi(strana, vel));
+    }
+
+    @GetMapping
+    public ResponseEntity<ProizvodDto> getProizvod(@RequestParam Long id, HttpSession sesija) {
+        if (sesija.getAttribute("korisnik") == null) {
+            Optional<Proizvod> proizvod = proizvodService.getProizvod(id);
+            if(proizvod.isPresent()){
+                ProizvodDto prozivodDto = new ProizvodDto(proizvod.get().getNaziv(), proizvod.get().getOpis(), proizvod.get().getKategorija(), proizvod.get().getCena(), proizvod.get().getSlika(), proizvod.get().getTipProdaje());
+                return ResponseEntity.status(HttpStatus.OK).body(prozivodDto);
+            }
+            else return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+        return null;
     }
 }
