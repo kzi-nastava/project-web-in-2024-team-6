@@ -4,6 +4,8 @@ package com.webshop.dto;
 import com.webshop.model.Kategorija;
 import com.webshop.model.Proizvod;
 
+import java.math.BigDecimal;
+
 public class ProizvodDto {
 
     private String naziv;
@@ -12,7 +14,7 @@ public class ProizvodDto {
 
     private Kategorija kategorija;
 
-    private double cena;
+    private BigDecimal cena;
 
     private String slika;
 
@@ -20,7 +22,7 @@ public class ProizvodDto {
 
     public ProizvodDto() { }
 
-    public ProizvodDto(String naziv, String opis, Kategorija kategorija, double cena, String slika, Proizvod.tipprodaje tipProdaje) {
+    public ProizvodDto(String naziv, String opis, Kategorija kategorija, BigDecimal cena, String slika, Proizvod.tipprodaje tipProdaje) {
         this.naziv = naziv;
         this.opis = opis;
         this.kategorija = kategorija;
@@ -41,7 +43,7 @@ public class ProizvodDto {
         return kategorija;
     }
 
-    public double getCena() {
+    public BigDecimal getCena() {
         return cena;
     }
 
@@ -65,7 +67,7 @@ public class ProizvodDto {
         this.kategorija = kategorija;
     }
 
-    public void setCena(double cena) {
+    public void setCena(BigDecimal cena) {
         this.cena = cena;
     }
 
