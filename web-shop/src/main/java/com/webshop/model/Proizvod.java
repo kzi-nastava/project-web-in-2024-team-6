@@ -1,5 +1,7 @@
 package com.webshop.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -41,7 +43,9 @@ public class Proizvod implements Serializable {
     @Column @OneToMany
     private Set<Ponuda> ponude;
 
-    @JoinColumn/*(name = "prodavac_id") */@ManyToOne
+    @ManyToOne
+    @JoinColumn(name = "prodavac_id")
+    @JsonBackReference
     private Korisnik prodavac;
 
     @Column(name = "ostavljenja_recenzija_od_strane_kupca")

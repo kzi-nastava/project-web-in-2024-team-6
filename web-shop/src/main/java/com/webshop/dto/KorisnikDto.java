@@ -1,6 +1,10 @@
 package com.webshop.dto;
 
+import com.webshop.model.Proizvod;
+
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 public class KorisnikDto {
                 private String trenutnaLozinka;
@@ -13,6 +17,7 @@ public class KorisnikDto {
                 private String brojTelefona;
                 private String ime;
                 private String prezime;
+                private Set<Proizvod> Prizvodi  = new HashSet<>();
 
 
 
@@ -31,6 +36,20 @@ public class KorisnikDto {
                 this.brojTelefona = brojTelefona;
                 this.prezime = prezime;
                 this.ime = ime;
+        }
+
+        public KorisnikDto(String trenutnaLozinka, Set<Proizvod> prizvodi, String prezime, String ime, String brojTelefona, String opis, String profilnaSlika, String korisnickoIme, String novaLozinka, String email, Date datumRodjenja) {
+                this.trenutnaLozinka = trenutnaLozinka;
+                Prizvodi = prizvodi;
+                this.prezime = prezime;
+                this.ime = ime;
+                this.brojTelefona = brojTelefona;
+                this.opis = opis;
+                this.profilnaSlika = profilnaSlika;
+                this.korisnickoIme = korisnickoIme;
+                this.novaLozinka = novaLozinka;
+                this.email = email;
+                this.datumRodjenja = datumRodjenja;
         }
 
         public String getTrenutnaLozinka() {
@@ -107,6 +126,10 @@ public class KorisnikDto {
 
         public String getPrezime() {
                 return prezime;
+        }
+
+        public Set<Proizvod> getPrizvodi() {
+                return Prizvodi;
         }
 
         public void setPrezime(String prezime) {
