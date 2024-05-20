@@ -3,6 +3,7 @@ package com.webshop.model;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -30,7 +31,7 @@ public class Proizvod implements Serializable {
     private Kategorija kategorija;
 
     @Column
-    private double cena;
+    private BigDecimal cena;
 
     @Column @Enumerated
     private tipprodaje tipProdaje;
@@ -69,7 +70,7 @@ public class Proizvod implements Serializable {
         this.kategorija = kategorija;
     }
 
-    public void setCena(double cena) {
+    public void setCena(BigDecimal cena) {
         this.cena = cena;
     }
 
@@ -121,7 +122,7 @@ public class Proizvod implements Serializable {
         return kategorija;
     }
 
-    public double getCena() {
+    public BigDecimal getCena() {
         return cena;
     }
 
