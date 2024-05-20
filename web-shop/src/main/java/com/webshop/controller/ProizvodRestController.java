@@ -1,6 +1,8 @@
 package com.webshop.controller;
 
 import com.webshop.dto.ProizvodDto;
+import com.webshop.dto.SearchDto;
+import com.webshop.model.Kategorija;
 import com.webshop.model.Proizvod;
 import com.webshop.service.ProizvodService;
 import jakarta.servlet.http.HttpSession;
@@ -8,11 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -21,7 +21,7 @@ public class ProizvodRestController {
 
     @Autowired
     private ProizvodService proizvodService;
-
+//treba pogledati da li tako ili ne
     @GetMapping
     public ResponseEntity<Page<ProizvodDto>> getProizvodi(@RequestParam int strana, @RequestParam int vel, HttpSession sesija) {
         if (sesija.getAttribute("korisnik") == null) {
@@ -32,11 +32,11 @@ public class ProizvodRestController {
             }
             return ResponseEntity.ok(strProizvoda);
         }
-        return ResponseEntity.ok(proizvodService.getProizvodi(strana, vel));
+        return null;
     }
 
-    @GetMapping
-    public ResponseEntity<ProizvodDto> getProizvod(@RequestParam Long id, HttpSession sesija) {
+    @GetMapping("/{id}")
+    public ResponseEntity<ProizvodDto> getProizvod(@PathVariable("id") Long id, HttpSession sesija) {
         if (sesija.getAttribute("korisnik") == null) {
             Optional<Proizvod> proizvod = proizvodService.getProizvod(id);
             if(proizvod.isPresent()){
@@ -47,4 +47,23 @@ public class ProizvodRestController {
         }
         return null;
     }
+
+    @PostMapping("/searchedNFiltered")
+    public ResponseEntity<Page<ProizvodDto>> getProizvodiFiltrirani(@RequestParam int strana,
+                                                                    @RequestBody SearchDto parametriPretrage,
+                                                                    HttpSession sesija) {
+        if(sesija.getAttribute("korisnik") == null) {
+            Page<ProizvodDto> strProizvoda = proizvodService.proizvodiSearchOrFilter(parametriPretrage, strana);
+            if (strProizvoda == null) {
+                return new ResponseEntity("Filteri nisu dobro primenjeni", HttpStatus.BAD_REQUEST);
+            }
+            if(strProizvoda.isEmpty()) {
+                return new ResponseEntity("Nema proizvoda kojji ispunjavaju te uslove!", HttpStatus.NOT_FOUND);
+            }
+
+            return ResponseEntity.ok(strProizvoda);
+        }
+        return null;
+    }
+
 }
