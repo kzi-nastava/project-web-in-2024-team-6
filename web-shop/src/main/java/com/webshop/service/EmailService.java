@@ -1,13 +1,18 @@
-/*package com.webshop.service;
+package com.webshop.service;
+import com.webshop.model.Korisnik;
+import com.webshop.model.Proizvod;
+import jakarta.mail.internet.MimeMessage;
+import org.springframework.context.annotation.Bean;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
+
 
 @Service
 public class EmailService {
+
 
     private final JavaMailSender javaMailSender;
 
@@ -20,19 +25,17 @@ public class EmailService {
         MimeMessageHelper helper = new MimeMessageHelper(message);
 
         try {
-            helper.setTo(buyer.getEmail());
+            helper.setTo(buyer.getMejlAdresa());
             helper.setSubject("Auction Ended: " + proizvod.getNaziv());
             helper.setText("Dear " + buyer.getIme() + ",\n\nThe auction for the product '" + proizvod.getNaziv() + "' has ended. You are the winner!\n\nThank you for participating.");
 
             javaMailSender.send(message);
 
             // Send email to seller
-            // You can add similar logic to send an email to the seller
-        } catch (MessagingException e) {
-            e.printStackTrace();
-            // Handle any exceptions or log errors
+        } catch (jakarta.mail.MessagingException e) {
+            throw new RuntimeException(e);
         }
     }
-}*/
+}
 
 
