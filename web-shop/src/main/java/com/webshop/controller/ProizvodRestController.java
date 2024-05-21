@@ -6,6 +6,7 @@ import com.webshop.dto.SearchDto;
 import com.webshop.model.Kategorija;
 
 
+import com.webshop.model.Korisnik;
 import com.webshop.model.Proizvod;
 import com.webshop.service.ProizvodService;
 import jakarta.servlet.http.HttpSession;
@@ -29,37 +30,39 @@ public class ProizvodRestController {
     private ProizvodService proizvodService;
 //treba pogledati da li tako ili ne
     @GetMapping
-    public ResponseEntity<Page<ProizvodDto>> getProizvodi(@RequestParam int strana, @RequestParam int vel, HttpSession sesija) {
-        if (sesija.getAttribute("korisnik") == null) {
-            if(vel == 0) vel = 1;
-            Page<ProizvodDto> strProizvoda = proizvodService.getProizvodi(strana, vel);
+    public ResponseEntity<Page<ProizvodDto>> getProizvodi(@RequestParam int strana, HttpSession sesija) {
+        Korisnik korisnik = (Korisnik) sesija.getAttribute("korisnik");
+        if(korisnik.getUloga() != Korisnik.TipKorisnika.Administrator){
+            Page<ProizvodDto> strProizvoda = proizvodService.getProizvodi(strana, 10);
             if (strProizvoda.isEmpty()) {
                 return new ResponseEntity("Nema proizvoda!", HttpStatus.NOT_FOUND);
             }
             return ResponseEntity.ok(strProizvoda);
         }
-        return null;
+        return new ResponseEntity("Zabranjen pristup", HttpStatus.FORBIDDEN);
     }
 
 
     @GetMapping("/{id}")
     public ResponseEntity<ProizvodDto> getProizvod(@PathVariable("id") Long id, HttpSession sesija) {
-        if (sesija.getAttribute("korisnik") == null) {
+        Korisnik korisnik = (Korisnik) sesija.getAttribute("korisnik");
+        if(korisnik.getUloga() != Korisnik.TipKorisnika.Administrator){
             Optional<Proizvod> proizvod = proizvodService.getProizvod(id);
             if(proizvod.isPresent()){
-                ProizvodDto prozivodDto = new ProizvodDto(proizvod.get().getNaziv(), proizvod.get().getOpis(), proizvod.get().getKategorija(), proizvod.get().getCena(), proizvod.get().getSlika(), proizvod.get().getTipProdaje());
+                ProizvodDto prozivodDto = new ProizvodDto(id ,proizvod.get().getNaziv(), proizvod.get().getOpis(), proizvod.get().getKategorija(), proizvod.get().getCena(), proizvod.get().getSlika(), proizvod.get().getTipProdaje());
                 return ResponseEntity.status(HttpStatus.OK).body(prozivodDto);
             }
-            else return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            else return new ResponseEntity("Takav proizvod ne postoji!", HttpStatus.NOT_FOUND);
         }
-        return null;
+        return new ResponseEntity("Zabranjen pristup", HttpStatus.FORBIDDEN);
     }
 
     @PostMapping("/searchedNFiltered")
     public ResponseEntity<Page<ProizvodDto>> getProizvodiFiltrirani(@RequestParam int strana,
                                                                     @RequestBody SearchDto parametriPretrage,
                                                                     HttpSession sesija) {
-        if (sesija.getAttribute("korisnik") == null) {
+        Korisnik korisnik = (Korisnik) sesija.getAttribute("korisnik");
+        if(korisnik.getUloga() != Korisnik.TipKorisnika.Administrator){
             Page<ProizvodDto> strProizvoda = proizvodService.proizvodiSearchOrFilter(parametriPretrage, strana);
             if (strProizvoda == null) {
                 return new ResponseEntity("Filteri nisu dobro primenjeni", HttpStatus.BAD_REQUEST);
@@ -70,13 +73,17 @@ public class ProizvodRestController {
 
             return ResponseEntity.ok(strProizvoda);
         }
-        return null;
+        return new ResponseEntity("Zabranjen pristup", HttpStatus.FORBIDDEN);
     }
 
     @PostMapping("/add")
-    public ResponseEntity<Proizvod> postaviProizvodNaProdaju(@RequestBody ProizvodDto proizvodDto) {
-        Proizvod proizvod = proizvodService.postaviProizvodNaProdaju(proizvodDto);
-        return ResponseEntity.ok(proizvod);
+    public ResponseEntity<Proizvod> postaviProizvodNaProdaju(@RequestBody ProizvodDto proizvodDto, HttpSession sesija) {
+        Korisnik korisnik = (Korisnik) sesija.getAttribute("korisnik");
+        if(korisnik.getUloga() == Korisnik.TipKorisnika.Prodavac){
+            Proizvod proizvod = proizvodService.postaviProizvodNaProdaju(proizvodDto);
+            return ResponseEntity.ok(proizvod);
+        }
+        return new ResponseEntity("Zabranjen pristup", HttpStatus.FORBIDDEN);
 
     }
 

@@ -79,38 +79,52 @@ public class KorisnikRestController {
 
     @PutMapping("/korisnici/{id}")
     public ResponseEntity<Korisnik> azurirajKorisnika(@PathVariable("id") String id,
-                                                      @RequestBody KorisnikDto azuriranKorisnik/*,@RequestHeader("Uloga") String uloga*/) {
-        try {
-            Korisnik azuriraniKorisnik = korisnikService.azurirajKorisnika(id, azuriranKorisnik/*,uloga*/);
-            return new ResponseEntity<>(azuriraniKorisnik, HttpStatus.OK);
-        } catch (EntityNotFoundException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+                                                      @RequestBody KorisnikDto azuriranKorisnik/*,@RequestHeader("Uloga") String uloga*/,
+                                                      HttpSession sesija) {
+
+        Korisnik korisnik = (Korisnik) sesija.getAttribute("korisnik");
+        if(korisnik.getUloga() == Korisnik.TipKorisnika.Prodavac || korisnik.getUloga() == Korisnik.TipKorisnika.Kupac){
+            try {
+                Korisnik azuriraniKorisnik = korisnikService.azurirajKorisnika(id, azuriranKorisnik);
+                return new ResponseEntity<>(azuriraniKorisnik, HttpStatus.OK);
+            } catch (EntityNotFoundException e) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            } catch (IllegalArgumentException e) {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            } catch (Exception e) {
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
         }
+        return new ResponseEntity("Zabranjen pristup", HttpStatus.FORBIDDEN);
     }
 
 
     @GetMapping("/korisnici")
-    public ResponseEntity<List<Korisnik>> nadjiSveKorisnike(){
-        try{
-            List<Korisnik> korisnici = korisnikService.nadjiSve();
-            return new ResponseEntity<>(korisnici, HttpStatus.OK);
-        }catch (Exception e){
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<List<Korisnik>> nadjiSveKorisnike(HttpSession sesija){
+        Korisnik korisnik = (Korisnik) sesija.getAttribute("korisnik");
+        if(korisnik.getUloga() == Korisnik.TipKorisnika.Prodavac || korisnik.getUloga() == Korisnik.TipKorisnika.Kupac){
+            try{
+                List<Korisnik> korisnici = korisnikService.nadjiSve();
+                return new ResponseEntity<>(korisnici, HttpStatus.OK);
+            }catch (Exception e){
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
         }
+        return new ResponseEntity("Zabranjen pristup", HttpStatus.FORBIDDEN);
     }
 
     @GetMapping("/korisnici/{id}")
-    public ResponseEntity<Korisnik> prikaziKorisnika(@PathVariable("id") String id){
-        try{
-            Optional<Korisnik> k = korisnikService.nadjiPoId(id);
-            return new ResponseEntity(k,HttpStatus.OK);
-        }catch (Exception e){
-            return new ResponseEntity("Doslo je do greske",HttpStatus.INTERNAL_SERVER_ERROR);
+    public ResponseEntity<Korisnik> prikaziKorisnika(@PathVariable("id") String id,HttpSession sesija){
+        Korisnik korisnik = (Korisnik) sesija.getAttribute("korisnik");
+        if(korisnik.getUloga() == Korisnik.TipKorisnika.Prodavac || korisnik.getUloga() == Korisnik.TipKorisnika.Kupac){
+            try{
+                Optional<Korisnik> k = korisnikService.nadjiPoId(id);
+                return new ResponseEntity(k,HttpStatus.OK);
+            }catch (Exception e){
+                return new ResponseEntity("Doslo je do greske",HttpStatus.INTERNAL_SERVER_ERROR);
+            }
         }
+        return new ResponseEntity("Zabranjen pristup", HttpStatus.FORBIDDEN);
     }
 
 

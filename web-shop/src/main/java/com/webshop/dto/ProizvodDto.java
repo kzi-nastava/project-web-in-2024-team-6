@@ -8,6 +8,8 @@ import java.math.BigDecimal;
 
 public class ProizvodDto {
 
+    private Long id;
+
     private String naziv;
 
     private String opis;
@@ -24,8 +26,8 @@ public class ProizvodDto {
     public ProizvodDto() { }
 
 
-    public ProizvodDto(String naziv, String opis, Kategorija kategorija, BigDecimal cena, String slika, Proizvod.tipprodaje tipProdaje) {
-
+    public ProizvodDto(Long id, String naziv, String opis, Kategorija kategorija, BigDecimal cena, String slika, Proizvod.tipprodaje tipProdaje) {
+        this.id = id;
         this.naziv = naziv;
         this.opis = opis;
         this.kategorija = kategorija;
@@ -46,6 +48,7 @@ public class ProizvodDto {
 
 
     public ProizvodDto(String naziv,String ProdavacId, String opis, Kategorija kategorija, BigDecimal cena, String slika, Proizvod.tipprodaje tipProdaje) {
+        this.id = id;
         this.naziv = naziv;
         this.opis = opis;
         this.kategorija = kategorija;
