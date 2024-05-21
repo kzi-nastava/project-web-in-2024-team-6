@@ -1,5 +1,6 @@
 package com.webshop.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -49,22 +50,23 @@ public class Korisnik implements Serializable {
     @Column(nullable = false)
     private boolean blokiran;
 
-    public Set<Proizvod> getPrizvodi() {
-        return Prizvodi;
-    }
-
-    public Set<Recenzija> getRecenzije() {
-        return recenzije;
-    }
-
-    @OneToMany//(mappedBy = "kupac") skloniti mappedby mogu biti kupljeni ili koji su na prodaju
-    private Set<Proizvod> Prizvodi  = new HashSet<>();
+    @OneToMany/*(mappedBy = "prodavac")*/
+    @JsonManagedReference
+    private Set<Proizvod> prizvodi = new HashSet<>();
 
     @Column @OneToMany
     private Set<Recenzija> recenzije = new HashSet<>();
 
     @Column
     private double prosecnaOcena;
+
+    public Set<Proizvod> getPrizvodi() {
+        return prizvodi;
+    }
+
+    public Set<Recenzija> getRecenzije() {
+        return recenzije;
+    }
 
     public Long getId() {
         return id;

@@ -1,8 +1,11 @@
 package com.webshop.controller;
 
 import com.webshop.dto.ProizvodDto;
+
 import com.webshop.dto.SearchDto;
 import com.webshop.model.Kategorija;
+
+
 import com.webshop.model.Proizvod;
 import com.webshop.service.ProizvodService;
 import jakarta.servlet.http.HttpSession;
@@ -12,8 +15,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+
 import java.util.List;
 import java.util.Optional;
+
+
 
 @RestController
 @RequestMapping("/api/products")
@@ -35,6 +41,7 @@ public class ProizvodRestController {
         return null;
     }
 
+
     @GetMapping("/{id}")
     public ResponseEntity<ProizvodDto> getProizvod(@PathVariable("id") Long id, HttpSession sesija) {
         if (sesija.getAttribute("korisnik") == null) {
@@ -52,18 +59,25 @@ public class ProizvodRestController {
     public ResponseEntity<Page<ProizvodDto>> getProizvodiFiltrirani(@RequestParam int strana,
                                                                     @RequestBody SearchDto parametriPretrage,
                                                                     HttpSession sesija) {
-        if(sesija.getAttribute("korisnik") == null) {
+        if (sesija.getAttribute("korisnik") == null) {
             Page<ProizvodDto> strProizvoda = proizvodService.proizvodiSearchOrFilter(parametriPretrage, strana);
             if (strProizvoda == null) {
                 return new ResponseEntity("Filteri nisu dobro primenjeni", HttpStatus.BAD_REQUEST);
             }
-            if(strProizvoda.isEmpty()) {
+            if (strProizvoda.isEmpty()) {
                 return new ResponseEntity("Nema proizvoda kojji ispunjavaju te uslove!", HttpStatus.NOT_FOUND);
             }
 
             return ResponseEntity.ok(strProizvoda);
         }
         return null;
+    }
+
+    @PostMapping("/add")
+    public ResponseEntity<Proizvod> postaviProizvodNaProdaju(@RequestBody ProizvodDto proizvodDto) {
+        Proizvod proizvod = proizvodService.postaviProizvodNaProdaju(proizvodDto);
+        return ResponseEntity.ok(proizvod);
+
     }
 
 }
