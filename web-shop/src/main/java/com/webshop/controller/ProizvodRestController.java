@@ -10,6 +10,7 @@ import com.webshop.model.Korisnik;
 import com.webshop.model.Proizvod;
 import com.webshop.service.KorisnikService;
 import com.webshop.service.ProizvodService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -111,5 +112,74 @@ public class ProizvodRestController {
         }
         return new ResponseEntity("Zabranjen pristup", HttpStatus.FORBIDDEN);
     }
+
+
+    @PostMapping("/krajAukcije/{id}")
+    public ResponseEntity<ProizvodDto> proglasiKrajAukcije(@PathVariable("id") Long id, HttpSession session) {
+        if (session.getAttribute("korisnik") == null) {
+           Korisnik korisnik = (Korisnik) session.getAttribute("korisnik");
+           if(korisnik.getUloga() == Korisnik.TipKorisnika.Prodavac) {
+               try {
+                   Proizvod proizvod = proizvodService.proglasiKrajAukcije(id);
+                   ProizvodDto proizvodDto = new ProizvodDto(
+                           proizvod.getNaziv(),
+                           proizvod.getOpis(),
+                           proizvod.getKategorija(),
+                           proizvod.getCena(),
+                           proizvod.getSlika(),
+                           proizvod.getTipProdaje()
+                   );
+                   return ResponseEntity.status(HttpStatus.OK).body(proizvodDto);
+               } catch (IllegalArgumentException e) {
+                   return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+               } catch (Exception e) {
+                   return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+               }
+           }
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ProizvodDto> azurirajProizvod(@PathVariable("id") Long id, @RequestBody ProizvodDto azuriraniProizvod, HttpSession session) {
+        if (session.getAttribute("korisnik") == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
+
+        try {
+            Proizvod updatedProizvod = proizvodService.azurirajProizvod(id, azuriraniProizvod);
+            ProizvodDto proizvodDto = new ProizvodDto(
+                    updatedProizvod.getNaziv(),
+                    updatedProizvod.getOpis(),
+                    updatedProizvod.getKategorija(),
+                    updatedProizvod.getCena(),
+                    updatedProizvod.getSlika(),
+                    updatedProizvod.getTipProdaje()
+            );
+            return ResponseEntity.status(HttpStatus.OK).body(proizvodDto);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+    /*@PostMapping("/api/purchase")
+    public ResponseEntity kupovina(@RequestBody ProizvodDto proizvodDto, HttpSession sesija){
+        if(sesija.getAttribute("korisnik") == null) return new ResponseEntity("Zabranjen pristup", HttpStatus.FORBIDDEN);
+        Korisnik korisnik = (Korisnik) sesija.getAttribute("korisnik");
+
+        Optional<Proizvod> proizvod = proizvodService.getProizvod(proizvodDto.getId());
+
+        if(proizvod.isPresent() && proizvod.get().isProdat() == false){
+            if(proizvod.get().getTipProdaje() == Proizvod.tipprodaje.fiksnaCena){
+
+            }
+        } else return new ResponseEntity("Prozivod je prodat ili ne postoji!", HttpStatus.NOT_FOUND);
+
+    }*/
+
 
 }

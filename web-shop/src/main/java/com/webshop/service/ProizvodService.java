@@ -5,10 +5,12 @@ import com.webshop.dto.ProizvodDto;
 import com.webshop.dto.SearchDto;
 import com.webshop.model.Kategorija;
 import com.webshop.model.Korisnik;
+import com.webshop.model.Ponuda;
 import com.webshop.model.Proizvod;
 import com.webshop.repository.KategorijaRepository;
 import com.webshop.repository.KorisnikRepository;
 import com.webshop.repository.ProizvodRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -158,7 +160,7 @@ public class ProizvodService {
     private KorisnikRepository korisnikRepository;
 
     public Proizvod postaviProizvodNaProdaju(ProizvodDto proizvodDto) {
-        Kategorija kategorija = proizvodDto.getKategorija();
+        Kategorija kategorija = kategorijaRepository.findByNaziv(proizvodDto.getKategorija().getNaziv());
         if (kategorija == null) {
             kategorija = new Kategorija();
             kategorija.setNaziv(proizvodDto.getKategorija().getNaziv());
@@ -182,6 +184,78 @@ public class ProizvodService {
         proizvodRepository.save(proizvod);
         prodavac.getPrizvodi().add(proizvod);
         korisnikRepository.save(prodavac);
+
+        return proizvod;
+    }
+
+    /*@Autowired
+    private EmailService emailService;*/
+
+    public Proizvod proglasiKrajAukcije(Long proizvodId){  //Da bi testirao treba da se implementir kupovina proizvoda metoda od kupca
+        Proizvod proizvod = proizvodRepository.findById(proizvodId).orElseThrow(() ->
+                new IllegalArgumentException("Proizvod sa ID-em " + proizvodId + " ne postoji"));
+
+        if(!proizvod.getTipProdaje().equals(Proizvod.tipprodaje.aukcija)){
+            throw new IllegalArgumentException("Proizvod sa ID-em " + proizvodId + " nije na aukciji");
+        }
+
+        if (proizvod.getPonude().isEmpty()){
+            throw new IllegalArgumentException("Nema ponuda za proizvod sa ID-em " + proizvodId);
+        }
+
+       Ponuda poslednjaPonuda = proizvod.getPonude().stream()
+               .max(Comparator.comparing(Ponuda::getCena))
+               .orElseThrow(() -> new IllegalArgumentException("Greska pri pronalazenju poslednje ponude"));
+
+       Korisnik kupac = poslednjaPonuda.getKupacKojiJeDaoPonudu();
+       Korisnik prodavac = proizvod.getProdavac();
+
+        kupac.getPrizvodi().add(proizvod);
+        prodavac.getPrizvodi().remove(proizvod);
+
+
+        proizvodRepository.save(proizvod);
+        korisnikRepository.save(kupac);
+        korisnikRepository.save(prodavac);
+
+        return proizvod;
+    }
+
+    public Proizvod azurirajProizvod(Long id, ProizvodDto azuriraniProizvod){
+        Proizvod proizvod = proizvodRepository.findById(id).orElseThrow(() ->
+                new EntityNotFoundException("Proizvod sa ID-em " + id + " ne postoji"));
+
+        if (proizvod.getProdavac().getUloga() != Korisnik.TipKorisnika.Prodavac){
+            throw new IllegalArgumentException("Samo prodavac sme da azurira proizvod");
+        }
+
+        if (proizvod.getTipProdaje().equals(Proizvod.tipprodaje.aukcija) && !proizvod.getPonude().isEmpty()) {
+            throw new IllegalArgumentException("Proizvod se ne može izmeniti jer postoji aktivna ponuda na aukciji.");
+        }
+
+        Kategorija kategorija = azuriraniProizvod.getKategorija();
+        if (kategorija != null) {
+            kategorija = kategorijaRepository.findById(kategorija.getId())
+                    .orElse(kategorijaRepository.save(kategorija));
+            proizvod.setKategorija(kategorija);
+        }
+        if (azuriraniProizvod.getNaziv() != null) {
+            proizvod.setNaziv(azuriraniProizvod.getNaziv());
+        }
+        if (azuriraniProizvod.getOpis() != null) {
+            proizvod.setOpis(azuriraniProizvod.getOpis());
+        }
+        if (azuriraniProizvod.getSlika() != null) {
+            proizvod.setSlika(azuriraniProizvod.getSlika());
+        }
+        if (azuriraniProizvod.getCena() != null) {
+            proizvod.setCena(azuriraniProizvod.getCena());
+        }
+        if (azuriraniProizvod.getTipProdaje() != null) {
+            proizvod.setTipProdaje(azuriraniProizvod.getTipProdaje());
+        }
+
+        proizvodRepository.save(proizvod);
 
         return proizvod;
     }
