@@ -160,7 +160,7 @@ public class ProizvodService {
     private KorisnikRepository korisnikRepository;
 
     public Proizvod postaviProizvodNaProdaju(ProizvodDto proizvodDto) {
-        Kategorija kategorija = proizvodDto.getKategorija();
+        Kategorija kategorija = kategorijaRepository.findByNaziv(proizvodDto.getKategorija().getNaziv());
         if (kategorija == null) {
             kategorija = new Kategorija();
             kategorija.setNaziv(proizvodDto.getKategorija().getNaziv());
@@ -188,6 +188,8 @@ public class ProizvodService {
         return proizvod;
     }
 
+    /*@Autowired
+    private EmailService emailService;*/
 
     public Proizvod proglasiKrajAukcije(Long proizvodId){  //Da bi testirao treba da se implementir kupovina proizvoda metoda od kupca
         Proizvod proizvod = proizvodRepository.findById(proizvodId).orElseThrow(() ->
