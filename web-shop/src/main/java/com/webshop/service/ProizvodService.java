@@ -70,11 +70,11 @@ public class ProizvodService {
         proizvod.setDatumObjavljivanja(new Date());
 
         kategorijaRepository.save(kategorija);
-        //proizvodRepository.save(proizvod);
+        proizvodRepository.save(proizvod);
         prodavac.getPrizvodi().add(proizvod);
         korisnikRepository.save(prodavac);
 
-        return proizvodRepository.save(proizvod);
+        return proizvod;
     }
 
 }

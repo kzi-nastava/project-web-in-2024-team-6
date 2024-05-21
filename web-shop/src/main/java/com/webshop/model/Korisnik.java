@@ -50,7 +50,7 @@ public class Korisnik implements Serializable {
     @Column(nullable = false)
     private boolean blokiran;
 
-    @OneToMany(mappedBy = "prodavac")
+    @OneToMany/*(mappedBy = "prodavac")*/
     @JsonManagedReference
     private Set<Proizvod> prizvodi = new HashSet<>();
 
