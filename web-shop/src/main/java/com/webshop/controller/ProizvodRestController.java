@@ -112,19 +112,4 @@ public class ProizvodRestController {
         return new ResponseEntity("Zabranjen pristup", HttpStatus.FORBIDDEN);
     }
 
-    /*@PostMapping("/api/purchase")
-    public ResponseEntity kupovina(@RequestBody ProizvodDto proizvodDto, HttpSession sesija){
-        if(sesija.getAttribute("korisnik") == null) return new ResponseEntity("Zabranjen pristup", HttpStatus.FORBIDDEN);
-        Korisnik korisnik = (Korisnik) sesija.getAttribute("korisnik");
-
-        Optional<Proizvod> proizvod = proizvodService.getProizvod(proizvodDto.getId());
-
-        if(proizvod.isPresent() && proizvod.get().isProdat() == false){
-            if(proizvod.get().getTipProdaje() == Proizvod.tipprodaje.fiksnaCena){
-
-            }
-        } else return new ResponseEntity("Prozivod je prodat ili ne postoji!", HttpStatus.NOT_FOUND);
-
-    }*/
-
 }
