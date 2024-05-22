@@ -223,6 +223,11 @@ public class ProizvodService {
         korisnikRepository.save(kupac);
         korisnikRepository.save(prodavac);
 
+        String subject = "Aukcija završena";
+        String body = "Aukcija za proizvod " + proizvod.getNaziv() + " je završena. Pobednik je " + kupac.getIme() + " " + kupac.getPrezime() + " sa ponudom od " + poslednjaPonuda.getCena() + " dinara.";
+        emailService.sendNewMail(kupac.getMejlAdresa(), subject, body);
+        emailService.sendNewMail(prodavac.getMejlAdresa(), subject, body);
+
         return proizvod;
     }
 
