@@ -3,6 +3,7 @@ package com.webshop.model;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 @Entity
 public class Ponuda implements Serializable {
@@ -13,12 +14,12 @@ public class Ponuda implements Serializable {
     private Long id;
 
     @Column
-    private double Cena;
+    private BigDecimal Cena;
 
     @JoinColumn(name = "kupac_id") @OneToOne
     private Korisnik kupacKojiJeDaoPonudu;
 
-    public double getCena() {
+    public BigDecimal getCena() {
         return Cena;
     }
 
@@ -30,11 +31,19 @@ public class Ponuda implements Serializable {
         return kupacKojiJeDaoPonudu;
     }
 
-    public void setCena(double cena) {
+    public void setCena(BigDecimal cena) {
         Cena = cena;
     }
 
     public void setKupacKojiJeDaoPonudu(Korisnik kupacKojiJeDaoPonudu) {
+        this.kupacKojiJeDaoPonudu = kupacKojiJeDaoPonudu;
+    }
+
+    public Ponuda() {
+    }
+
+    public Ponuda( BigDecimal cena, Korisnik kupacKojiJeDaoPonudu) {
+        Cena = cena;
         this.kupacKojiJeDaoPonudu = kupacKojiJeDaoPonudu;
     }
 }

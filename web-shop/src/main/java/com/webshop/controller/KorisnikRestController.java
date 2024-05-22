@@ -2,7 +2,10 @@ package com.webshop.controller;
 
 import com.webshop.dto.KorisnikDto;
 import com.webshop.dto.LoginDto;
+import com.webshop.dto.PrijavaProfilaDto;
+import com.webshop.dto.RecenzijaDto;
 import com.webshop.model.Korisnik;
+import com.webshop.model.Recenzija;
 import com.webshop.service.KorisnikService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpSession;
@@ -19,7 +22,6 @@ public class KorisnikRestController {
 
     @Autowired
     private KorisnikService korisnikService;
-
 
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody LoginDto loginDto, HttpSession sesija) {
@@ -83,6 +85,7 @@ public class KorisnikRestController {
                                                       HttpSession sesija) {
 
         Korisnik korisnik = (Korisnik) sesija.getAttribute("korisnik");
+        if(korisnik == null) return new ResponseEntity("Zabranjen pristup!",HttpStatus.FORBIDDEN);
         if(korisnik.getUloga() == Korisnik.TipKorisnika.Prodavac || korisnik.getUloga() == Korisnik.TipKorisnika.Kupac){
             try {
                 Korisnik azuriraniKorisnik = korisnikService.azurirajKorisnika(id, azuriranKorisnik);
@@ -102,6 +105,7 @@ public class KorisnikRestController {
     @GetMapping("/korisnici")
     public ResponseEntity<List<Korisnik>> nadjiSveKorisnike(HttpSession sesija){
         Korisnik korisnik = (Korisnik) sesija.getAttribute("korisnik");
+        if(korisnik == null) return new ResponseEntity("Zabranjen pristup!",HttpStatus.FORBIDDEN);
         if(korisnik.getUloga() == Korisnik.TipKorisnika.Prodavac || korisnik.getUloga() == Korisnik.TipKorisnika.Kupac){
             try{
                 List<Korisnik> korisnici = korisnikService.nadjiSve();
@@ -116,6 +120,7 @@ public class KorisnikRestController {
     @GetMapping("/korisnici/{id}")
     public ResponseEntity<Korisnik> prikaziKorisnika(@PathVariable("id") String id,HttpSession sesija){
         Korisnik korisnik = (Korisnik) sesija.getAttribute("korisnik");
+        if(korisnik == null) return new ResponseEntity("Zabranjen pristup!",HttpStatus.FORBIDDEN);
         if(korisnik.getUloga() == Korisnik.TipKorisnika.Prodavac || korisnik.getUloga() == Korisnik.TipKorisnika.Kupac){
             try{
                 Optional<Korisnik> k = korisnikService.nadjiPoId(id);
@@ -127,5 +132,63 @@ public class KorisnikRestController {
         return new ResponseEntity("Zabranjen pristup", HttpStatus.FORBIDDEN);
     }
 
+    @PostMapping("/api/oceni")
+    public ResponseEntity oceniKorisnika(@RequestBody RecenzijaDto recenzijaDto, HttpSession session){
+        if(recenzijaDto.getKomentar() == null || recenzijaDto.getProizvodDto() == null) return new ResponseEntity("Los zahtev je psolat!" ,HttpStatus.BAD_REQUEST);
+        Korisnik korisnik = (Korisnik) session.getAttribute("korisnik");
+        if(korisnik == null) return new ResponseEntity("Zabranjen pristup!",HttpStatus.FORBIDDEN);
+        if(korisnik.getUloga() == Korisnik.TipKorisnika.Administrator) return new ResponseEntity("Zabranjen pristup!",HttpStatus.FORBIDDEN);
+
+        if(korisnik.getUloga() == Korisnik.TipKorisnika.Kupac){
+            if(korisnikService.oceniProdavca(recenzijaDto, korisnik)){
+                return new ResponseEntity("Uspesno ste ocenili Prodavca", HttpStatus.OK);
+            }
+            return new ResponseEntity("Niste uspesno ocenili prodavca",HttpStatus.INTERNAL_SERVER_ERROR);
+        } else {
+            if(korisnikService.oceniKupca(recenzijaDto, korisnik)){
+                return new ResponseEntity("Uspesno ste ocenili Kupaca", HttpStatus.OK);
+            }
+            return new ResponseEntity("niste uspesno ocenili kupaca", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/api/pregledajDateRecenzije")
+    public ResponseEntity<List<Recenzija>> pregledajDateRecenzije(HttpSession sesija){
+        Korisnik korisnik = (Korisnik) sesija.getAttribute("korisnik");
+        if(korisnik == null) return new ResponseEntity("Zabranjen pristup!",HttpStatus.FORBIDDEN);
+        if(korisnik.getUloga() == Korisnik.TipKorisnika.Administrator) return new ResponseEntity("Zabranjen pristup!",HttpStatus.FORBIDDEN);
+
+        if(korisnik.getUloga() == Korisnik.TipKorisnika.Kupac || korisnik.getUloga() == Korisnik.TipKorisnika.Prodavac){
+            List<Recenzija> recenzije= korisnikService.pregledajDateRecenzije(korisnik);
+            return ResponseEntity.ok(recenzije);
+        }
+        return new ResponseEntity("Zabranjen pristup!",HttpStatus.FORBIDDEN);
+    }
+
+    @GetMapping("/api/pregledajPrimljeneRecenzije")
+    public ResponseEntity<List<Recenzija>> pregledajPrimljeneRecenzije(HttpSession sesija){
+        Korisnik korisnik = (Korisnik) sesija.getAttribute("korisnik");
+        if(korisnik == null) return new ResponseEntity("Zabranjen pristup!",HttpStatus.FORBIDDEN);
+        if(korisnik.getUloga() == Korisnik.TipKorisnika.Administrator) return new ResponseEntity("Zabranjen pristup!",HttpStatus.FORBIDDEN);
+
+        if(korisnik.getUloga() == Korisnik.TipKorisnika.Kupac || korisnik.getUloga() == Korisnik.TipKorisnika.Prodavac){
+            List<Recenzija> recenzije= korisnikService.pregledajPrimljneRecenzije(korisnik);
+            return ResponseEntity.ok(recenzije);
+        }
+        return new ResponseEntity("Zabranjen pristup!",HttpStatus.FORBIDDEN);
+    }
+
+    @PostMapping("/api/prijaviKorisnika")
+    public ResponseEntity<String> prijaviKorisnika(HttpSession sesija, @RequestBody PrijavaProfilaDto prijavaProfilaDto){
+        Korisnik korisnik = (Korisnik) sesija.getAttribute("korisnik");
+        if(korisnik == null) return new ResponseEntity("Zabranjen pristup!",HttpStatus.FORBIDDEN);
+        if(korisnik.getUloga() == Korisnik.TipKorisnika.Administrator) return new ResponseEntity("Zabranjen pristup!",HttpStatus.FORBIDDEN);
+
+        if(korisnik.getUloga() == Korisnik.TipKorisnika.Kupac || korisnik.getUloga() == Korisnik.TipKorisnika.Prodavac){
+            korisnikService.prijaviKorisnika(korisnik, prijavaProfilaDto);
+            return ResponseEntity.ok("Uspesno podneta prijava ");
+        }
+        return new ResponseEntity("Zabranjen pristup!",HttpStatus.FORBIDDEN);
+    }
 
 }

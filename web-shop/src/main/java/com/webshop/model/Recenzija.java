@@ -13,7 +13,7 @@ public class Recenzija implements Serializable {
     private Long id;
 
     @Column
-    private int ocena;
+    private double ocena;
 
     @Column
     private String komentar;
@@ -25,7 +25,7 @@ public class Recenzija implements Serializable {
     @JoinColumn//(name = "korisnik_id")  KORISNIK KOJI JE DAO RECENZIJU
     private Korisnik korisnik;
 
-    public int getOcena() {
+    public double getOcena() {
         return ocena;
     }
 
@@ -58,6 +58,13 @@ public class Recenzija implements Serializable {
     }
 
     public void setKorisnik(Korisnik korisnik) {
+        this.korisnik = korisnik;
+    }
+
+    public Recenzija(double ocena, String komentar, LocalDate datumRecenzije, Korisnik korisnik) {
+        this.ocena = ocena;
+        this.komentar = komentar;
+        this.datumRecenzije = datumRecenzije;
         this.korisnik = korisnik;
     }
 }

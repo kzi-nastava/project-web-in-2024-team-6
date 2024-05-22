@@ -9,6 +9,7 @@ import com.webshop.model.Ponuda;
 import com.webshop.model.Proizvod;
 import com.webshop.repository.KategorijaRepository;
 import com.webshop.repository.KorisnikRepository;
+import com.webshop.repository.PonudaRepository;
 import com.webshop.repository.ProizvodRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -31,6 +33,9 @@ public class ProizvodService {
 
     @Autowired
     private ProizvodRepository proizvodRepository;
+
+    @Autowired
+    private PonudaService ponudaService;
 
     public Page<ProizvodDto> getProizvodi(int brstr, int velstr) {
 
@@ -188,8 +193,8 @@ public class ProizvodService {
         return proizvod;
     }
 
-    /*@Autowired
-    private EmailService emailService;*/
+    @Autowired
+    private EmailService emailService;
 
     public Proizvod proglasiKrajAukcije(Long proizvodId){  //Da bi testirao treba da se implementir kupovina proizvoda metoda od kupca
         Proizvod proizvod = proizvodRepository.findById(proizvodId).orElseThrow(() ->
@@ -258,6 +263,41 @@ public class ProizvodService {
         proizvodRepository.save(proizvod);
 
         return proizvod;
+    }
+
+    public boolean obavljenaTrgovinaFiksnaCena(Proizvod proizvod, Korisnik korisnik) {
+        proizvod.setProdat(true);
+        if(proizvodRepository.save(proizvod) == null) return false;
+        korisnik.getPrizvodi().add(proizvod);
+        proizvod.getProdavac().getPrizvodi().remove(proizvod);
+        if (korisnikRepository.save(korisnik) == null) return false;
+        if (korisnikRepository.save(proizvod.getProdavac()) == null) return false;
+
+        return true;
+
+    }
+
+    public boolean novaPonuda(Proizvod proizvod, Korisnik korisnik, BigDecimal ponuda){
+        if(ponuda.compareTo(proizvod.getCena()) == -1 || !proizvod.isProdat() ) return false;
+
+        Ponuda ponudaObj = new Ponuda(ponuda, korisnik);
+        proizvod.setCena(ponuda);
+
+        if(ponudaService.newPonuda(ponudaObj) != null) return true;
+
+        return false;
+    }
+
+    public Korisnik findKorisnikKojiJeKupioProizovd(Proizvod proizvod) {
+        List<Korisnik> korisnici = korisnikRepository.findAll();
+
+        for(Korisnik k : korisnici) {
+            if(k.getPrizvodi().contains(proizvod)) {
+                return k;
+            }
+        }
+
+        return null;
     }
 
 }

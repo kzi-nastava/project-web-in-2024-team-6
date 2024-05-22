@@ -1,8 +1,10 @@
 package com.webshop.model;
 
 import jakarta.persistence.*;
+import org.springframework.cglib.core.Local;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -15,7 +17,7 @@ public class PrijavaProfila implements Serializable {
     private String razlogPrijave;
 
     @Column
-    private Date datumPodnosenjaPrijave;
+    private LocalDate datumPodnosenjaPrijave;
 
     @JoinColumn(name = "korisnik_podneo_prijavu_id") @ManyToOne
     private Korisnik korisnikKojiJePodneoPrijavu;
@@ -36,7 +38,7 @@ public class PrijavaProfila implements Serializable {
         return razlogPrijave;
     }
 
-    public Date getDatumPodnosenjaPrijave() {
+    public LocalDate getDatumPodnosenjaPrijave() {
         return datumPodnosenjaPrijave;
     }
 
@@ -56,7 +58,7 @@ public class PrijavaProfila implements Serializable {
         this.razlogPrijave = razlogPrijave;
     }
 
-    public void setDatumPodnosenjaPrijave(Date datumPodnosenjaPrijave) {
+    public void setDatumPodnosenjaPrijave(LocalDate datumPodnosenjaPrijave) {
         this.datumPodnosenjaPrijave = datumPodnosenjaPrijave;
     }
 
@@ -70,5 +72,17 @@ public class PrijavaProfila implements Serializable {
 
     public void setStatusPrijave(statPrijave statusPrijave) {
         this.statusPrijave = statusPrijave;
+    }
+
+    public PrijavaProfila(long id, String razlogPrijave, LocalDate datumPodnosenjaPrijave, Korisnik korisnikKojiJePodneoPrijavu, Korisnik korisnikNaKogaSeOdnosiPrijavu, statPrijave statusPrijave) {
+        this.id = id;
+        this.razlogPrijave = razlogPrijave;
+        this.datumPodnosenjaPrijave = datumPodnosenjaPrijave;
+        this.korisnikKojiJePodneoPrijavu = korisnikKojiJePodneoPrijavu;
+        this.korisnikNaKogaSeOdnosiPrijavu = korisnikNaKogaSeOdnosiPrijavu;
+        this.statusPrijave = statusPrijave;
+    }
+
+    public PrijavaProfila() {
     }
 }

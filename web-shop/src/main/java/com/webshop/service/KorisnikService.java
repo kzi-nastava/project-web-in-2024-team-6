@@ -1,12 +1,26 @@
 package com.webshop.service;
 
 import com.webshop.dto.KorisnikDto;
+import com.webshop.dto.PrijavaProfilaDto;
+import com.webshop.dto.ProizvodDto;
+import com.webshop.dto.RecenzijaDto;
 import com.webshop.model.Korisnik;
+import com.webshop.model.PrijavaProfila;
+import com.webshop.model.Proizvod;
+import com.webshop.model.Recenzija;
 import com.webshop.repository.KorisnikRepository;
+import com.webshop.repository.ProizvodRepository;
+import com.webshop.repository.RecenzijaRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.annotation.Immutable;
+import org.springframework.data.history.Revision;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,6 +31,14 @@ public class KorisnikService {
 
     @Autowired
     KorisnikRepository korisnikRepository;
+    @Autowired
+    private ProizvodService proizvodService;
+    @Autowired
+    private ProizvodRepository proizvodRepository;
+    @Autowired
+    private RecenzijaService recenzijaService;
+    @Autowired
+    private PrijavaProfilaService prijavaProfilaService;
 
     public Korisnik login(String korisnickoIme, String lozinka) {
         Korisnik korisnik = korisnikRepository.findByKorisnickoIme(korisnickoIme);
@@ -86,8 +108,98 @@ public class KorisnikService {
        return korisnikRepository.findAll();
     }
 
+    public boolean oceniProdavca(RecenzijaDto recenzijaDto, Korisnik korisnik){
+
+        Optional<Proizvod> proizvodOptional = proizvodService.getProizvod(recenzijaDto.getProizvodDto().getId());
+
+        Proizvod proizvod = new Proizvod();
+
+        if(proizvodOptional.isPresent()) {
+            proizvod = proizvodOptional.get();
+        }
+
+        if(proizvod.isOstavljenaRecenzijaOdStraneKupca()) return false;
+
+        Recenzija recenzija = new Recenzija(recenzijaDto.getOcena(), recenzijaDto.getKomentar(), LocalDate.now(), korisnik);
+        recenzijaService.save(recenzija);
 
 
+        proizvod.getProdavac().getRecenzije().add(recenzija);
+        proizvodRepository.save(proizvod);
+        proizvod.setOstavljenaRecenzijaOdStraneKupca(true);
+        proizvodRepository.save(proizvod);
 
+        return true;
+
+    }
+
+    public boolean oceniKupca(RecenzijaDto recenzijaDto, Korisnik korisnik){
+
+        Optional<Proizvod> proizvodOptional = proizvodService.getProizvod(recenzijaDto.getProizvodDto().getId());
+
+        Proizvod proizvod = new Proizvod();
+
+        if(proizvodOptional.isPresent()) {
+            proizvod = proizvodOptional.get();
+        }
+
+        if(proizvod.isOstavljenaRecenzijaOdStraneProdavca()) return false;
+
+        Recenzija recenzija = new Recenzija(recenzijaDto.getOcena(), recenzijaDto.getKomentar(), LocalDate.now(), korisnik);
+        recenzijaService.save(recenzija);
+
+        Korisnik kupac = proizvodService.findKorisnikKojiJeKupioProizovd(proizvod);
+
+        kupac.getRecenzije().add(recenzija);
+        korisnikRepository.save(kupac);
+        proizvod.setOstavljenaRecenzijaOdStraneProdavca(true);
+        proizvodRepository.save(proizvod);
+
+        return true;
+
+    }
+
+    public List<Recenzija> pregledajDateRecenzije(Korisnik korisnik){
+
+        List<Korisnik> korisnci = korisnikRepository.findAll();
+        List <Recenzija> recenzijaList = new ArrayList<>();
+
+        for(Korisnik k : korisnci) {
+            for(Recenzija r : k.getRecenzije()) {
+                if(r.getKorisnik() == korisnik) recenzijaList.add(r);
+            }
+        }
+
+        return recenzijaList;
+
+    }
+
+    public List<Recenzija> pregledajPrimljneRecenzije(Korisnik korisnik){
+
+        List<Recenzija> recenzije = new ArrayList<>();
+
+        for(Recenzija r : korisnik.getRecenzije()) {
+            Korisnik kojiJeDaoRecenziju = r.getKorisnik();
+            for (Recenzija rec : kojiJeDaoRecenziju.getRecenzije()) {
+                if(rec.getKorisnik() == korisnik) recenzije.add(r);
+            }
+        }
+        return recenzije;
+    }
+
+    public boolean prijaviKorisnika(Korisnik korisnik, PrijavaProfilaDto prijavaProfilaDto){
+
+        PrijavaProfila prijava = new PrijavaProfila();
+
+        prijava.setDatumPodnosenjaPrijave(LocalDate.now());
+        prijava.setRazlogPrijave(prijavaProfilaDto.getPrijava().getRazlogPrijave());
+        prijava.setStatusPrijave(PrijavaProfila.statPrijave.podneta);
+        prijava.setKorisnikKojiJePodneoPrijavu(korisnik);
+        prijava.setKorisnikNaKogaSeOdnosiPrijavu(prijavaProfilaDto.getProizvod().getProdavac());
+
+        prijavaProfilaService.save(prijava);
+
+        return true;
+    }
 
 }

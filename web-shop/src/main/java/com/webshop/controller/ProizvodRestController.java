@@ -8,7 +8,8 @@ import com.webshop.model.Kategorija;
 
 import com.webshop.model.Korisnik;
 import com.webshop.model.Proizvod;
-import com.webshop.service.KorisnikService;
+import com.webshop.service.EmailService;
+import com.webshop.service.PonudaService;
 import com.webshop.service.ProizvodService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpSession;
@@ -19,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,7 +33,9 @@ public class ProizvodRestController {
     @Autowired
     private ProizvodService proizvodService;
     @Autowired
-    private KorisnikService korisnikService;
+    private PonudaService ponudaService;
+    @Autowired
+    private EmailService emailService;
 
     //treba pogledati da li tako ili ne
     @GetMapping
@@ -166,20 +170,58 @@ public class ProizvodRestController {
         }
     }
 
-    /*@PostMapping("/api/purchase")
-    public ResponseEntity kupovina(@RequestBody ProizvodDto proizvodDto, HttpSession sesija){
+    @PostMapping("/api/purchase")
+    public ResponseEntity<Proizvod> kupovina(@RequestBody ProizvodDto proizvodDto, HttpSession sesija){
         if(sesija.getAttribute("korisnik") == null) return new ResponseEntity("Zabranjen pristup", HttpStatus.FORBIDDEN);
         Korisnik korisnik = (Korisnik) sesija.getAttribute("korisnik");
 
-        Optional<Proizvod> proizvod = proizvodService.getProizvod(proizvodDto.getId());
+        if(korisnik.getUloga() == Korisnik.TipKorisnika.Kupac){
 
-        if(proizvod.isPresent() && proizvod.get().isProdat() == false){
-            if(proizvod.get().getTipProdaje() == Proizvod.tipprodaje.fiksnaCena){
+            Optional<Proizvod> proizvodOptional = proizvodService.getProizvod(proizvodDto.getId());
+            if(proizvodOptional.isPresent()){
+                Proizvod proizvod = proizvodOptional.get();
 
-            }
-        } else return new ResponseEntity("Prozivod je prodat ili ne postoji!", HttpStatus.NOT_FOUND);
+                if(!proizvod.isProdat()) return new ResponseEntity("Proizvod je vec prodat!", HttpStatus.FORBIDDEN);
 
-    }*/
+                if(proizvod.getTipProdaje() == Proizvod.tipprodaje.fiksnaCena){
+                    if(proizvodService.obavljenaTrgovinaFiksnaCena(proizvod, korisnik)) {
+                        //posalji mejl i kupcu i prodavcu;
+                        emailService.sendNewMail(korisnik.getMejlAdresa(), "Uspesno kupljen proizvod: " + proizvod.getNaziv() + "!" , "Uspesno ste kupili proizvod sa nazivom" + proizvod.getNaziv() + " od " + proizvod.getProdavac().getKorisnickoIme() + "!");
+                        emailService.sendNewMail(proizvod.getProdavac().getMejlAdresa(), "Vas prozivod: " + proizvod.getNaziv() +" je prodat!", "Vas prozivod" + proizvod.getNaziv() + "je kupio korisnik: " + korisnik.getKorisnickoIme() + ".");
+                        return ResponseEntity.status(HttpStatus.OK).body(proizvod);
+                    }
+                    else return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(proizvod);
+                }
+            } else return new ResponseEntity("Prozivod ne postoji!", HttpStatus.NOT_FOUND);
+        }
 
+        return new ResponseEntity("Zabranjen pristup", HttpStatus.FORBIDDEN);
+    }
+    @PostMapping("/api/offer/{ponuda}")
+    public ResponseEntity<Proizvod> kupovina(@RequestBody ProizvodDto proizvodDto, @PathVariable BigDecimal ponuda, HttpSession sesija){
+        if(sesija.getAttribute("korisnik") == null) return new ResponseEntity("Zabranjen pristup", HttpStatus.FORBIDDEN);
+        Korisnik korisnik = (Korisnik) sesija.getAttribute("korisnik");
+
+        if(korisnik.getUloga() == Korisnik.TipKorisnika.Kupac){
+
+            Optional<Proizvod> proizvodOptional = proizvodService.getProizvod(proizvodDto.getId());
+            if(proizvodOptional.isPresent()){
+                Proizvod proizvod = proizvodOptional.get();
+
+                if(!proizvod.isProdat()) return new ResponseEntity("Proizvod je vec prodat!", HttpStatus.FORBIDDEN);
+
+                if(proizvod.getTipProdaje() == Proizvod.tipprodaje.aukcija){
+                    if(proizvodService.novaPonuda(proizvod, korisnik, ponuda)) {
+                        //posalji mejl prodavcu da je stavljena nova ponuda;
+                        emailService.sendNewMail(proizvod.getProdavac().getMejlAdresa(), "Stigla je nova ponuda za proizvod " + proizvod.getNaziv() + ".", "Stigla je nova ponuda za proizvod " + proizvod.getNaziv() + ". Korisnik koji je dao ponudu je: " + korisnik.getKorisnickoIme() + ".");
+                        return ResponseEntity.status(HttpStatus.OK).body(proizvod);
+                    }
+                    else return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(proizvod);
+                }
+            } else return new ResponseEntity("Prozivod ne postoji!", HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity("Zabranjen pristup", HttpStatus.FORBIDDEN);
+    }
 
 }
