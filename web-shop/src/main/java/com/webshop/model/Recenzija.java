@@ -25,6 +25,10 @@ public class Recenzija implements Serializable {
     @JoinColumn//(name = "korisnik_id")  KORISNIK KOJI JE DAO RECENZIJU
     private Korisnik korisnik;
 
+    public Recenzija() {
+
+    }
+
     public double getOcena() {
         return ocena;
     }
