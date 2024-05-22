@@ -49,7 +49,7 @@ public class Recenzija implements Serializable {
         return korisnik;
     }
 
-    public void setOcena(int ocena) {
+    public void setOcena(double ocena) {
         this.ocena = ocena;
     }
 

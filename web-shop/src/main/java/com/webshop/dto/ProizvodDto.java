@@ -36,6 +36,9 @@ public class ProizvodDto {
         this.tipProdaje = tipProdaje;
     }
 
+    public ProizvodDto() {
+    }
+
     public String getProdavacId() {
         return ProdavacId;
     }

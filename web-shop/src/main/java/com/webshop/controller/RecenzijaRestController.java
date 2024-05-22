@@ -1,5 +1,6 @@
 package com.webshop.controller;
 
+import com.webshop.dto.RecenzijaDto;
 import com.webshop.model.Recenzija;
 import com.webshop.service.RecenzijaService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,15 +24,15 @@ public class RecenzijaRestController {
     }
 
     @PutMapping("/{reviewId}")
-    public ResponseEntity<String> izmeniRecenziju(@PathVariable Long reviewId, @RequestBody String newComment) {
-        recenzijaService.izmeniRecenziju(reviewId, newComment);
-        return ResponseEntity.ok("Review updated successfully.");
+    public ResponseEntity<String> izmeniRecenziju(@PathVariable Long reviewId, @RequestBody RecenzijaDto recenzijaDto) {
+        recenzijaService.izmeniRecenziju(reviewId, recenzijaDto);
+        return ResponseEntity.ok("Recenzija uspešno izmenjena.");
     }
 
     @DeleteMapping("/{reviewId}")
     public ResponseEntity<String> izbrisiRecenziju(@PathVariable Long reviewId) {
         recenzijaService.izbrisiRecenziju(reviewId);
-        return ResponseEntity.ok("Review deleted successfully.");
+        return ResponseEntity.ok("Recenzija uspesno izbrisana.");
     }
 }
 

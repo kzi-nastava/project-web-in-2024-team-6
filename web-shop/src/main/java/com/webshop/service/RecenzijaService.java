@@ -1,5 +1,6 @@
 package com.webshop.service;
 
+import com.webshop.dto.RecenzijaDto;
 import com.webshop.model.Korisnik;
 import com.webshop.model.Recenzija;
 import com.webshop.repository.RecenzijaRepository;
@@ -23,10 +24,15 @@ public class RecenzijaService {
         return recenzijaRepository.findAll();
     }
 
-    public void izmeniRecenziju(Long reviewId, String newComment) {
+    public void izmeniRecenziju(Long reviewId, RecenzijaDto recenzijaDto) {
         Recenzija review = recenzijaRepository.findById(reviewId)
                 .orElseThrow(() -> new IllegalArgumentException("Review with ID " + reviewId + " not found."));
-        review.setKomentar(newComment);
+
+        review.setOcena(recenzijaDto.getOcena());
+        review.setKomentar(recenzijaDto.getKomentar());
+
+        // Mogu se i menjati drugi podaci recenzije
+
         recenzijaRepository.save(review);
     }
 
