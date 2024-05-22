@@ -6,9 +6,9 @@ INSERT INTO Proizvod (naziv, opis, slika, cena, datum_objavljivanja, ostavljenja
 INSERT INTO Proizvod (naziv, opis, slika, cena, datum_objavljivanja, ostavljenja_recenzija_od_strane_kupca, ostavljenja_recenzija_od_strane_prodavca, prodat, kategorija_id, tip_prodaje) VALUES ('prozorkso okno', 'drvo', '#', 10000.0, '2022-01-04', 0, 0, 0, 2, 1);
 INSERT INTO Proizvod (naziv, opis, slika, cena, datum_objavljivanja, ostavljenja_recenzija_od_strane_kupca, ostavljenja_recenzija_od_strane_prodavca, prodat, kategorija_id, tip_prodaje) VALUES ('ceger', 'platneni', '#', 50.0, '2024-02-05', 0, 0, 0, 3, 0);
 
-INSERT INTO Prijava_profila (razlog_prijave, datum_podnosenja_prijave, status_prijave) VALUES ('Ne profesionalnost', '2024-02-02', 0);
+INSERT INTO Prijava_profila (razlog_prijave, datum_podnosenja_prijave, status_prijave) VALUES ('Neprofesionalnost', '2024-02-02', 0);
 INSERT INTO Prijava_profila (razlog_prijave, datum_podnosenja_prijave, status_prijave) VALUES ('laze', '2024-02-02', 0);
-INSERT INTO Prijava_profila (razlog_prijave, datum_podnosenja_prijave, status_prijave) VALUES ('ne precizan', '2024-02-02', 0);
+INSERT INTO Prijava_profila (razlog_prijave, datum_podnosenja_prijave, status_prijave) VALUES ('neprecizan', '2024-02-02', 0);
 
 INSERT INTO Korisnik (ime, prezime, korisnicko_ime, mejl_adresa, broj_telefona, lozinka, datum_rodjenja, putanja_do_slike, opis, blokiran,uloga, prosecna_ocena)
 VALUES ('John', 'Doe', 'johndoe', 'john@example.com', '123456789', 'password', '1990-05-15', '/path/to/image', 'Description', false, 1, 0.0);
