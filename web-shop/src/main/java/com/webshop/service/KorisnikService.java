@@ -62,7 +62,7 @@ public class KorisnikService {
     }
 
 
-    public Korisnik azurirajKorisnika(String id, KorisnikDto azuriranKorisnik){
+    public Korisnik azurirajKorisnika(long id, KorisnikDto azuriranKorisnik){
 
         Korisnik korisnik = korisnikRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Korisnik sa ID-jem " + id + " nije pronađen."));
@@ -100,7 +100,7 @@ public class KorisnikService {
 
 
 
-    public Optional<Korisnik> nadjiPoId(String id){
+    public Optional<Korisnik> nadjiPoId(long id){
         return korisnikRepository.findById(id);
     }
 

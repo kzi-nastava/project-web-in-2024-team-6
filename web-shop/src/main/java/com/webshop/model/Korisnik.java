@@ -13,7 +13,7 @@ public class Korisnik implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
 
     public enum TipKorisnika {Prodavac, Kupac, Administrator}
 
@@ -50,11 +50,11 @@ public class Korisnik implements Serializable {
     @Column(nullable = false)
     private boolean blokiran;
 
-    @OneToMany/*(mappedBy = "prodavac")*/
+    @OneToMany(fetch = FetchType.EAGER)
     @JsonManagedReference
     private Set<Proizvod> prizvodi = new HashSet<>();
 
-    @Column @OneToMany
+    @Column @OneToMany(fetch = FetchType.EAGER)
     private Set<Recenzija> recenzije = new HashSet<>();
 
     @Column

@@ -181,7 +181,7 @@ public class ProizvodRestController {
             if(proizvodOptional.isPresent()){
                 Proizvod proizvod = proizvodOptional.get();
 
-                if(!proizvod.isProdat()) return new ResponseEntity("Proizvod je vec prodat!", HttpStatus.FORBIDDEN);
+                if(proizvod.isProdat()) return new ResponseEntity("Proizvod je vec prodat!", HttpStatus.FORBIDDEN);
 
                 if(proizvod.getTipProdaje() == Proizvod.tipprodaje.fiksnaCena){
                     if(proizvodService.obavljenaTrgovinaFiksnaCena(proizvod, korisnik)) {

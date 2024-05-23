@@ -171,8 +171,11 @@ public class ProizvodService {
             kategorija.setNaziv(proizvodDto.getKategorija().getNaziv());
             kategorijaRepository.save(kategorija);
         }
-
-        Korisnik prodavac = korisnikRepository.findById(proizvodDto.getProdavacId()).orElseThrow(() ->
+        /*System.out.println(proizvodDto.getProdavacId());
+        System.out.println(proizvodDto.getId());
+        System.out.println(proizvodDto.getOpis());
+        System.out.println(proizvodDto.getNaziv());*/
+        Korisnik prodavac = korisnikRepository.findById(proizvodDto.getId()).orElseThrow(() ->
                 new IllegalArgumentException("Prodavac sa ID-jem " + proizvodDto.getProdavacId() + " ne postoji."));
 
         Proizvod proizvod = new Proizvod();

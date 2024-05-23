@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.math.BigDecimal;
 import java.util.List;
 
-@RestController("/api/category")
+@RestController
 public class KategorijaRestKontroler {
 
     @Autowired
@@ -31,9 +31,13 @@ public class KategorijaRestKontroler {
     @Autowired
     private ProizvodService proizvodService;
 
-    @GetMapping
+    @GetMapping("/api/categories")
     public ResponseEntity<List<Kategorija>> getKategorije(HttpSession sesija) {
         Korisnik korisnik = (Korisnik) sesija.getAttribute("korisnik");
+        if(korisnik == null) {
+            List<Kategorija> kategorije = kategorijaService.findAll();
+            return ResponseEntity.ok(kategorije);
+        }
         if(korisnik.getUloga() != Korisnik.TipKorisnika.Administrator){
             List<Kategorija> kategorije = kategorijaService.findAll();
             return ResponseEntity.ok(kategorije);
@@ -41,9 +45,18 @@ public class KategorijaRestKontroler {
         return new ResponseEntity("Zabranjen pristup", HttpStatus.FORBIDDEN);
     }
 
-    @GetMapping("/{id}/{str}")
+    @GetMapping("/api/category/{id}/{str}")
     public ResponseEntity<Page<ProizvodDto>> getKategorija(@PathVariable("id") Long id, HttpSession sesija, @PathVariable int str) {
         Korisnik korisnik = (Korisnik) sesija.getAttribute("korisnik");
+        if(korisnik == null) {
+            Kategorija kategorija = kategorijaService.findById(id);
+            if (kategorija == null) {
+                return new ResponseEntity("Kategorija sa tim id-om nije nadjena!", HttpStatus.NOT_FOUND);
+            }
+            SearchDto sdto = new SearchDto("", BigDecimal.ZERO, BigDecimal.ZERO, kategorija, Proizvod.tipprodaje.aukcija, "00010");
+            Page<ProizvodDto> strProizvodaPoKategoriji = proizvodService.proizvodiSearchOrFilter(sdto, str);
+            return ResponseEntity.ok(strProizvodaPoKategoriji);
+        }
         if(korisnik.getUloga() != Korisnik.TipKorisnika.Administrator){
             Kategorija kategorija = kategorijaService.findById(id);
             if (kategorija == null) {

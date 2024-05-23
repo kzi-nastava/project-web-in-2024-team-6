@@ -80,7 +80,7 @@ public class KorisnikRestController {
 
 
     @PutMapping("/korisnici/{id}")
-    public ResponseEntity<Korisnik> azurirajKorisnika(@PathVariable("id") String id,
+    public ResponseEntity<Korisnik> azurirajKorisnika(@PathVariable("id") long id,
                                                       @RequestBody KorisnikDto azuriranKorisnik/*,@RequestHeader("Uloga") String uloga*/,
                                                       HttpSession sesija) {
 
@@ -118,7 +118,7 @@ public class KorisnikRestController {
     }
 
     @GetMapping("/korisnici/{id}")
-    public ResponseEntity<Korisnik> prikaziKorisnika(@PathVariable("id") String id,HttpSession sesija){
+    public ResponseEntity<Korisnik> prikaziKorisnika(@PathVariable("id") long id,HttpSession sesija){
         Korisnik korisnik = (Korisnik) sesija.getAttribute("korisnik");
         if(korisnik == null) return new ResponseEntity("Zabranjen pristup!",HttpStatus.FORBIDDEN);
         if(korisnik.getUloga() == Korisnik.TipKorisnika.Prodavac || korisnik.getUloga() == Korisnik.TipKorisnika.Kupac){
