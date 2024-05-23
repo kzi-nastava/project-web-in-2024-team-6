@@ -16,6 +16,8 @@ INSERT INTO Korisnik (ime, prezime, korisnicko_ime, mejl_adresa, broj_telefona, 
 VALUES ('Bill', 'Lincoln', 'bigbilly', 'bbilly@example.com', '123456889', 'password2', '1990-05-15', '/path/to/image', 'Description', false, 1, 0.0);
 INSERT INTO Korisnik (ime, prezime, korisnicko_ime, mejl_adresa, broj_telefona, lozinka, datum_rodjenja, putanja_do_slike, opis, blokiran,uloga, prosecna_ocena)
 VALUES ('Mark', 'Hunter', 'mrkhunter', 'mark@example.com', '123496789', 'password3', '1987-08-12', '/path/to/image', 'Description', false, 0, 0.0);
+INSERT INTO Korisnik (ime, prezime, korisnicko_ime, mejl_adresa, broj_telefona, lozinka, datum_rodjenja, putanja_do_slike, opis, blokiran,uloga, prosecna_ocena)
+VALUES ('Bane', 'Bozanic', 'baneadmin', 'admin@webshop.com', '21354878', 'admin', '2003-04-25', '/path/to/image', 'nema', false, 2, 0.0);
 
 INSERT INTO Ponuda (Cena, kupac_id) VALUES (150.0, 1);
 INSERT INTO Ponuda (Cena, kupac_id) VALUES (350.0, 3);
