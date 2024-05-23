@@ -49,7 +49,7 @@ public class PrijavaProfilaService {
     public void prihvatiPrijavu(Long prijavaId) {
         PrijavaProfila prijava = prijavaProfilaRepository.findById(prijavaId)
                 .orElseThrow(() -> new IllegalArgumentException("Prijava with ID " + prijavaId + " not found."));
-        prijava.setStatusPrijave(PrijavaProfila.statPrijave.valueOf("prihvaćena"));
+        prijava.setStatusPrijave(PrijavaProfila.statPrijave.valueOf("prihvacena"));
 
         Korisnik korisnik = prijava.getKorisnikNaKogaSeOdnosiPrijavu();
         Korisnik korisnik2 = prijava.getKorisnikKojiJePodneoPrijavu();
