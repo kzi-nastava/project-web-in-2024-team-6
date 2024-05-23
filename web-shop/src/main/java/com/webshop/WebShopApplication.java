@@ -8,10 +8,13 @@ import com.webshop.repository.KategorijaRepository;
 import com.webshop.repository.KorisnikRepository;
 import com.webshop.repository.PonudaRepository;
 import com.webshop.repository.ProizvodRepository;
+import com.webshop.service.EmailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.FileSystemXmlApplicationContext;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -37,9 +40,12 @@ public class WebShopApplication implements CommandLineRunner {
 	@Autowired
 	private PonudaRepository ponudaRepository;
 
+	@Autowired
+	private EmailService emailService;
+
 	@Override
 	public void run(String... args) {
-
+		//emailService.sendNewMail("bozanicbane03@gmail.com", "tesrt", "tst");
 	}
 
 	public static void main(String[] args) {

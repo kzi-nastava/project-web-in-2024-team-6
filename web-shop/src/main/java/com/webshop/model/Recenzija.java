@@ -1,5 +1,7 @@
 package com.webshop.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -13,7 +15,7 @@ public class Recenzija implements Serializable {
     private Long id;
 
     @Column
-    private int ocena;
+    private double ocena;
 
     @Column
     private String komentar;
@@ -23,9 +25,14 @@ public class Recenzija implements Serializable {
 
     @ManyToOne
     @JoinColumn//(name = "korisnik_id")  KORISNIK KOJI JE DAO RECENZIJU
+    @JsonBackReference
     private Korisnik korisnik;
 
-    public int getOcena() {
+    public Recenzija() {
+
+    }
+
+    public double getOcena() {
         return ocena;
     }
 
@@ -45,7 +52,7 @@ public class Recenzija implements Serializable {
         return korisnik;
     }
 
-    public void setOcena(int ocena) {
+    public void setOcena(double ocena) {
         this.ocena = ocena;
     }
 
@@ -58,6 +65,13 @@ public class Recenzija implements Serializable {
     }
 
     public void setKorisnik(Korisnik korisnik) {
+        this.korisnik = korisnik;
+    }
+
+    public Recenzija(double ocena, String komentar, LocalDate datumRecenzije, Korisnik korisnik) {
+        this.ocena = ocena;
+        this.komentar = komentar;
+        this.datumRecenzije = datumRecenzije;
         this.korisnik = korisnik;
     }
 }

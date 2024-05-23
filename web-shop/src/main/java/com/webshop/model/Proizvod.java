@@ -1,8 +1,11 @@
 package com.webshop.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -30,7 +33,7 @@ public class Proizvod implements Serializable {
     private Kategorija kategorija;
 
     @Column
-    private double cena;
+    private BigDecimal cena;
 
     @Column @Enumerated
     private tipprodaje tipProdaje;
@@ -38,10 +41,12 @@ public class Proizvod implements Serializable {
     @Column
     private Date datumObjavljivanja;
 
-    @Column @OneToMany
+    @Column @OneToMany(fetch = FetchType.EAGER)
     private Set<Ponuda> ponude;
 
-    @JoinColumn/*(name = "prodavac_id") */@ManyToOne
+    @ManyToOne
+    @JoinColumn(name = "prodavac_id")
+    @JsonBackReference
     private Korisnik prodavac;
 
     @Column(name = "ostavljenja_recenzija_od_strane_kupca")
@@ -69,7 +74,7 @@ public class Proizvod implements Serializable {
         this.kategorija = kategorija;
     }
 
-    public void setCena(double cena) {
+    public void setCena(BigDecimal cena) {
         this.cena = cena;
     }
 
@@ -121,7 +126,7 @@ public class Proizvod implements Serializable {
         return kategorija;
     }
 
-    public double getCena() {
+    public BigDecimal getCena() {
         return cena;
     }
 
