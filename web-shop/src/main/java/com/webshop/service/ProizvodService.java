@@ -171,7 +171,10 @@ public class ProizvodService {
             kategorija.setNaziv(proizvodDto.getKategorija().getNaziv());
             kategorijaRepository.save(kategorija);
         }
-
+        /*System.out.println(proizvodDto.getProdavacId());
+        System.out.println(proizvodDto.getId());
+        System.out.println(proizvodDto.getOpis());
+        System.out.println(proizvodDto.getNaziv());*/
         Korisnik prodavac = korisnikRepository.findById(proizvodDto.getProdavacId()).orElseThrow(() ->
                 new IllegalArgumentException("Prodavac sa ID-jem " + proizvodDto.getProdavacId() + " ne postoji."));
 
@@ -217,6 +220,7 @@ public class ProizvodService {
 
         kupac.getPrizvodi().add(proizvod);
         prodavac.getPrizvodi().remove(proizvod);
+        proizvod.setProdat(true);
 
 
         proizvodRepository.save(proizvod);
@@ -272,7 +276,7 @@ public class ProizvodService {
 
     public boolean obavljenaTrgovinaFiksnaCena(Proizvod proizvod, Korisnik korisnik) {
         proizvod.setProdat(true);
-        if(proizvodRepository.save(proizvod) == null) return false;
+        if(save(proizvod) == null) return false;
         korisnik.getPrizvodi().add(proizvod);
         proizvod.getProdavac().getPrizvodi().remove(proizvod);
         if (korisnikRepository.save(korisnik) == null) return false;
@@ -283,14 +287,13 @@ public class ProizvodService {
     }
 
     public boolean novaPonuda(Proizvod proizvod, Korisnik korisnik, BigDecimal ponuda){
-        if(ponuda.compareTo(proizvod.getCena()) == -1 || !proizvod.isProdat() ) return false;
+        if(ponuda.compareTo(proizvod.getCena()) == -1 || proizvod.isProdat() ) return false;
 
         Ponuda ponudaObj = new Ponuda(ponuda, korisnik);
         proizvod.setCena(ponuda);
+        proizvod.getPonude().add(ponudaObj);
 
-        if(ponudaService.newPonuda(ponudaObj) != null) return true;
-
-        return false;
+        return ponudaService.newPonuda(ponudaObj) != null && save(proizvod) != null;
     }
 
     public Korisnik findKorisnikKojiJeKupioProizovd(Proizvod proizvod) {
@@ -303,6 +306,10 @@ public class ProizvodService {
         }
 
         return null;
+    }
+
+    public Proizvod save(Proizvod proizvod){
+       return proizvodRepository.save(proizvod);
     }
 
 }

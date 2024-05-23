@@ -16,7 +16,7 @@ public class Ponuda implements Serializable {
     @Column
     private BigDecimal Cena;
 
-    @JoinColumn(name = "kupac_id") @OneToOne
+    @JoinColumn(name = "kupac_id") @ManyToOne(fetch = FetchType.EAGER)
     private Korisnik kupacKojiJeDaoPonudu;
 
     public BigDecimal getCena() {

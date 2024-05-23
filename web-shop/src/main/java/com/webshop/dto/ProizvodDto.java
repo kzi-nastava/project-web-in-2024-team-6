@@ -22,6 +22,15 @@ public class ProizvodDto {
 
     private Proizvod.tipprodaje tipProdaje;
 
+    public ProizvodDto(String naziv,long ProdavacId, String opis, Kategorija kategorija, BigDecimal cena, String slika, Proizvod.tipprodaje tipProdaje) {
+        this.naziv = naziv;
+        this.opis = opis;
+        this.kategorija = kategorija;
+        this.cena = cena;
+        this.slika = slika;
+        this.tipProdaje = tipProdaje;
+        this.ProdavacId = ProdavacId;
+    }
 
     public ProizvodDto(String naziv, String opis, Kategorija kategorija, BigDecimal cena, String slika, Proizvod.tipprodaje tipProdaje) { }
 
@@ -36,30 +45,24 @@ public class ProizvodDto {
         this.tipProdaje = tipProdaje;
     }
 
+
+
+
+    public long getProdavacId() {
+        return ProdavacId;
+    }
+
+    public void setProdavacId(long prodavacId) {
+        ProdavacId = prodavacId;
+    }
+
+    private long ProdavacId;
+
     public ProizvodDto() {
     }
 
 
-    public String getProdavacId() {
-        return ProdavacId;
-    }
 
-    public void setProdavacId(String prodavacId) {
-        ProdavacId = prodavacId;
-    }
-
-    private String ProdavacId;
-
-
-    public ProizvodDto(String naziv,String ProdavacId, String opis, Kategorija kategorija, BigDecimal cena, String slika, Proizvod.tipprodaje tipProdaje) {
-        this.naziv = naziv;
-        this.opis = opis;
-        this.kategorija = kategorija;
-        this.cena = cena;
-        this.slika = slika;
-        this.tipProdaje = tipProdaje;
-        this.ProdavacId = ProdavacId;
-    }
 
     public Long getId() { return id; }
 
