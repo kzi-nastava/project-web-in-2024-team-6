@@ -54,7 +54,8 @@ public class Korisnik implements Serializable {
     @JsonManagedReference
     private Set<Proizvod> prizvodi = new HashSet<>();
 
-    @Column @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER)
+    @JsonManagedReference
     private Set<Recenzija> recenzije = new HashSet<>();
 
     @Column

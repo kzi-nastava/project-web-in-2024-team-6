@@ -1,5 +1,7 @@
 package com.webshop.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -23,6 +25,7 @@ public class Recenzija implements Serializable {
 
     @ManyToOne
     @JoinColumn//(name = "korisnik_id")  KORISNIK KOJI JE DAO RECENZIJU
+    @JsonBackReference
     private Korisnik korisnik;
 
     public Recenzija() {

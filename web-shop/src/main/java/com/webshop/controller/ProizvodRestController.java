@@ -118,9 +118,9 @@ public class ProizvodRestController {
     }
 
 
-    @PostMapping("/krajAukcije/{id}")
+    @PostMapping("/krajAukcije/{id}")//dodati da aslje mejl@!!!!!!
     public ResponseEntity<ProizvodDto> proglasiKrajAukcije(@PathVariable("id") Long id, HttpSession session) {
-        if (session.getAttribute("korisnik") == null) {
+        if (session.getAttribute("korisnik") != null) {
            Korisnik korisnik = (Korisnik) session.getAttribute("korisnik");
            if(korisnik.getUloga() == Korisnik.TipKorisnika.Prodavac) {
                try {
@@ -208,7 +208,7 @@ public class ProizvodRestController {
             if(proizvodOptional.isPresent()){
                 Proizvod proizvod = proizvodOptional.get();
 
-                if(!proizvod.isProdat()) return new ResponseEntity("Proizvod je vec prodat!", HttpStatus.FORBIDDEN);
+                if(proizvod.isProdat()) return new ResponseEntity("Proizvod je vec prodat!", HttpStatus.FORBIDDEN);
 
                 if(proizvod.getTipProdaje() == Proizvod.tipprodaje.aukcija){
                     if(proizvodService.novaPonuda(proizvod, korisnik, ponuda)) {

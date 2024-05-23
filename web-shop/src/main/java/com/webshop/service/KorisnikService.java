@@ -116,7 +116,7 @@ public class KorisnikService {
 
         if(proizvodOptional.isPresent()) {
             proizvod = proizvodOptional.get();
-        }
+        } else {return false;}
 
         if(proizvod.isOstavljenaRecenzijaOdStraneKupca()) return false;
 
@@ -125,7 +125,9 @@ public class KorisnikService {
 
 
         proizvod.getProdavac().getRecenzije().add(recenzija);
-        proizvodRepository.save(proizvod);
+
+        Korisnik izmenjen = izracunajProsecnu(proizvod.getProdavac());
+        korisnikRepository.save(izmenjen);
         proizvod.setOstavljenaRecenzijaOdStraneKupca(true);
         proizvodRepository.save(proizvod);
 
@@ -148,10 +150,14 @@ public class KorisnikService {
         Recenzija recenzija = new Recenzija(recenzijaDto.getOcena(), recenzijaDto.getKomentar(), LocalDate.now(), korisnik);
         recenzijaService.save(recenzija);
 
-        Korisnik kupac = proizvodService.findKorisnikKojiJeKupioProizovd(proizvod);
+        System.out.println(proizvod.getNaziv());
 
+        Korisnik kupac = proizvodService.findKorisnikKojiJeKupioProizovd(proizvod);
+        if(kupac == null) return false;
         kupac.getRecenzije().add(recenzija);
-        korisnikRepository.save(kupac);
+
+        Korisnik izmenjenKupac = izracunajProsecnu(kupac);
+        korisnikRepository.save(izmenjenKupac);
         proizvod.setOstavljenaRecenzijaOdStraneProdavca(true);
         proizvodRepository.save(proizvod);
 
@@ -163,10 +169,11 @@ public class KorisnikService {
 
         List<Korisnik> korisnci = korisnikRepository.findAll();
         List <Recenzija> recenzijaList = new ArrayList<>();
-
         for(Korisnik k : korisnci) {
             for(Recenzija r : k.getRecenzije()) {
-                if(r.getKorisnik() == korisnik) recenzijaList.add(r);
+                if(r.getKorisnik().getId() == korisnik.getId()) {
+                    recenzijaList.add(r);
+                }
             }
         }
 
@@ -179,9 +186,10 @@ public class KorisnikService {
         List<Recenzija> recenzije = new ArrayList<>();
 
         for(Recenzija r : korisnik.getRecenzije()) {
-            Korisnik kojiJeDaoRecenziju = r.getKorisnik();
+            Korisnik kojiJeDaoRecenziju = korisnikRepository.findById(r.getKorisnik().getId()).orElseThrow();
             for (Recenzija rec : kojiJeDaoRecenziju.getRecenzije()) {
-                if(rec.getKorisnik() == korisnik) recenzije.add(r);
+                System.out.println(kojiJeDaoRecenziju.getId());
+                if(rec.getKorisnik().getId() == korisnik.getId()) recenzije.add(r);
             }
         }
         return recenzije;
@@ -195,11 +203,21 @@ public class KorisnikService {
         prijava.setRazlogPrijave(prijavaProfilaDto.getPrijava().getRazlogPrijave());
         prijava.setStatusPrijave(PrijavaProfila.statPrijave.podneta);
         prijava.setKorisnikKojiJePodneoPrijavu(korisnik);
-        prijava.setKorisnikNaKogaSeOdnosiPrijavu(prijavaProfilaDto.getProizvod().getProdavac());
+        Korisnik nksop = proizvodService.getProizvod(prijavaProfilaDto.getProizvod().getId()).get().getProdavac();
+        prijava.setKorisnikNaKogaSeOdnosiPrijavu(nksop);
 
         prijavaProfilaService.save(prijava);
 
         return true;
+    }
+
+    public Korisnik izracunajProsecnu(Korisnik kosrinik){
+        double sum = 0;
+        for(Recenzija r : kosrinik.getRecenzije()) {
+            sum += r.getOcena();
+        }
+        kosrinik.setProsenaOcena(sum / kosrinik.getRecenzije().size());
+        return kosrinik;
     }
 
 }

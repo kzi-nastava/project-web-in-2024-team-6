@@ -41,7 +41,7 @@ public class Proizvod implements Serializable {
     @Column
     private Date datumObjavljivanja;
 
-    @Column @OneToMany
+    @Column @OneToMany(fetch = FetchType.EAGER)
     private Set<Ponuda> ponude;
 
     @ManyToOne
