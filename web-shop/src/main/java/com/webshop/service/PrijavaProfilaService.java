@@ -54,9 +54,7 @@ public class PrijavaProfilaService {
         Korisnik korisnik = prijava.getKorisnikNaKogaSeOdnosiPrijavu();
         Korisnik korisnik2 = prijava.getKorisnikKojiJePodneoPrijavu();
         korisnik.setBlokiran(true);
-        korisnik.getPrizvodi().forEach(proizvod -> {
-            proizvodRepository.delete(proizvod);
-        });
+        korisnik.getPrizvodi().clear();
 
         String subject2 = "Odgovor na podnesenu prijavu";
         String body2 = "korisnik " + korisnik.getKorisnickoIme() + "je blokiran";
