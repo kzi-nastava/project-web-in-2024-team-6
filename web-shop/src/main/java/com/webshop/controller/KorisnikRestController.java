@@ -191,4 +191,12 @@ public class KorisnikRestController {
         return new ResponseEntity("Zabranjen pristup!",HttpStatus.FORBIDDEN);
     }
 
+    @GetMapping("/api/isLoged")
+    public ResponseEntity<Boolean> isLoged(HttpSession sesija){
+        Korisnik korisnik = (Korisnik) sesija.getAttribute("korisnik");
+        if(korisnik == null) return ResponseEntity.ok(false);
+        else if(korisnik != null) return ResponseEntity.ok( true);
+        else return new ResponseEntity("Nema odgovora", HttpStatus.FORBIDDEN);
+    }
+
 }
