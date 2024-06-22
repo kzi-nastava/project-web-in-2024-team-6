@@ -1,12 +1,12 @@
 <template>
    <header>
-     <img alt="logo" src="../assets/logo.png" class="logo"/>
+     <img alt="logo" src="../assets/logo.png" class="logo" @click="redirectHome"/>
      <nav>
        <router-link to="/">Home</router-link> |
        <router-link to="/about">About</router-link>
      </nav>
      <div class ="loginRegister" >
-       <button v-if="!loggedIn">
+       <button v-if="!loggedIn" @click="redirect">
          Login
        </button>
        <button v-if="!loggedIn">
@@ -15,6 +15,12 @@
        <button v-if="loggedIn">
         Logout
       </button>
+      <div v-if="loggedIn" class="img_border">
+        <a>
+          <img src="#" alt="avatar">
+        </a>
+      </div>
+        
      </div>
    </header>
  </template>
@@ -24,7 +30,7 @@ import axios from 'axios';
  export default {
    name: 'Header',
    data() {
-      return{ loggedIn: false};
+      return{ loggedIn: false };
    },
    mounted(){
       this.chechLoginStatus();
@@ -35,14 +41,24 @@ import axios from 'axios';
           .get("http://localhost:8081/api/isLoged", {withCreditentials: true})
           .then((res) =>{
               if(res.data){
+                console.log("uso");
                 this.loggedIn = true;
               } else {
+                console.log(" nije uso");
                 this.loggedIn = false;
               }
           })
-          .catch(
-            this.loggedIn = false
+          .catch((err) => {
+            console.log("uso");
+            this.loggedIn = false;
+          }
           );
+      },
+      redirect() {
+        this.$router.push("/login");
+      },
+      redirectHome(){
+        this.$router.push("/");
       }
    }
  };
@@ -52,14 +68,12 @@ import axios from 'axios';
 .loginRegister {
    display: flex;
    margin-right: 1%;
-   width: 20%;
-   justify-content: space-around;
-   
 }
 
 .loginRegister button {
  width: 6em;
  height: 2.5em;
+ margin: 1%;
 }
 
 header {
@@ -72,5 +86,9 @@ header {
 .logo {
  height: 80%;
  margin-left: 1%;
+}
+.img_border{
+  height: 70%;
+  border-radius: 50%;
 }
 </style>
