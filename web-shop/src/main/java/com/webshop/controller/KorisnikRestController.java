@@ -124,7 +124,7 @@ public class KorisnikRestController {
         if(korisnik.getUloga() == Korisnik.TipKorisnika.Prodavac || korisnik.getUloga() == Korisnik.TipKorisnika.Kupac){
             try{
                 Optional<Korisnik> k = korisnikService.nadjiPoId(id);
-                return new ResponseEntity(k,HttpStatus.OK);
+                return new ResponseEntity(korisnik,HttpStatus.OK);
             }catch (Exception e){
                 return new ResponseEntity("Doslo je do greske",HttpStatus.INTERNAL_SERVER_ERROR);
             }

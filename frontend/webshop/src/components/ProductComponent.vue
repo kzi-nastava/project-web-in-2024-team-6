@@ -1,5 +1,5 @@
 <template>
-   <div class="productDiv">
+   <div clss="product">
       <img :src="product.slika" alt="slikaProizvoda">
       <h3>{{ product.naziv }}</h3>
       <p>{{ product.opis }}</p>
@@ -10,7 +10,7 @@
 
 <script>
 export default{
-   name: 'ProductInList',
+   name: 'product',
    props: {
       product: {
          type: Object,
@@ -20,15 +20,15 @@ export default{
 };
 </script>
 
-<style>
-.productDiv{
+<style scoped>
+.product{
    border: 1px solid #ccc;
    padding: 16px;
    margin: 4%;
-   width: 20%;
+   width: 100%;
    background-color: #ccc;
 }
-.productDiv img {
+.product img {
    width: 100%;
 }
 </style>

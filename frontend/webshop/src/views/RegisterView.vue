@@ -8,6 +8,7 @@
 import RegisterPage from "@/components/Register.vue";
 
 export default {
+  name: 'RegisterView',
   components: { RegisterPage },
 };
 </script>

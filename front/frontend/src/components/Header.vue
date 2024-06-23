@@ -3,21 +3,20 @@
      <img alt="logo" src="../assets/logo.png" class="logo" @click="redirectHome"/>
      <nav>
        <router-link to="/">Home</router-link> |
-       <router-link to="/about">About</router-link>
      </nav>
      <div class ="loginRegister" >
        <button v-if="!loggedIn" @click="redirect">
          Login
        </button>
-       <button v-if="!loggedIn">
+       <button v-if="!loggedIn" @click="redirectRegister">
          Register
        </button>
-       <button v-if="loggedIn">
+       <button v-if="loggedIn" @click="redirectLogout">
         Logout
       </button>
       <div v-if="loggedIn" class="img_border">
         <a>
-          <img src="#" alt="avatar">
+          <img src="../assets/user.png" alt="avatar" class="avat">
         </a>
       </div>
         
@@ -38,10 +37,10 @@ import axios from 'axios';
    methods: {
       chechLoginStatus() {
         axios
-          .get("http://localhost:8081/api/isLoged", {withCreditentials: true})
+          .get("http://localhost:8081/api/isLoged", {withCredentials: true})
           .then((res) =>{
-              if(res.data === true){
-                this.$forceUpdate();
+              if(res.data){
+                console.log(res.data);
                 this.loggedIn = true;
               } else {
                 console.log(res.data);
@@ -59,7 +58,26 @@ import axios from 'axios';
       },
       redirectHome(){
         this.$router.push("/");
-      }
+      },
+      redirectLogout(){
+        axios 
+          .post('http://localhost:8081/logout', {}, {withCredentials: true})
+          .then((res) => {
+            alert('uspesno ste se odlogovali');
+            this.$router.push('/');
+          })
+          .catch((err) => {
+            alert('Greska pri odlogvavanju:', err);
+          });
+      },
+      redirectRegister(){
+        this.$router.push('/register');
+      },
+      watch: {
+        $route(to, from) {
+            this.chechLoginStatus();
+        }
+    }
    }
  };
 </script>
@@ -89,6 +107,10 @@ header {
 }
 .img_border{
   height: 70%;
-  border-radius: 50%;
+  width: 30%;
+}
+.avat{
+  height: 35px;
+  margin-left: 5px;
 }
 </style>

@@ -1,5 +1,6 @@
 <template>
-  <router-view/>
+  <HeaderComp />
+  <router-view />
 </template>
 
 <style>
@@ -11,3 +12,14 @@
   color: #2c3e50;
 }
 </style>
+
+<script>
+  import HeaderComp from './components/HeaderComponent.vue';
+
+  export default {
+    name: 'App',
+    components: {
+      HeaderComp
+    }
+  }
+</script>
