@@ -1,5 +1,5 @@
 <template>
-   <header>
+   <header @click="chechLoginStatus">
      <img alt="logo" src="../assets/logo.png" class="logo" @click="redirectHome"/>
      <nav>
        <router-link to="/">Home</router-link> |
@@ -40,16 +40,16 @@ import axios from 'axios';
         axios
           .get("http://localhost:8081/api/isLoged", {withCreditentials: true})
           .then((res) =>{
-              if(res.data){
+              if(res.data === true){
                 console.log("uso");
                 this.loggedIn = true;
               } else {
-                console.log(" nije uso");
+                console.log(res.data);
                 this.loggedIn = false;
               }
           })
           .catch((err) => {
-            console.log("uso");
+            console.log(err);
             this.loggedIn = false;
           }
           );
