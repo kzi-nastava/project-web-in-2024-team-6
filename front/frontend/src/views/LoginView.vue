@@ -62,7 +62,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
    table{
       width: auto;
       margin-left: auto;

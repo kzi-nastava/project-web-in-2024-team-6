@@ -1,9 +1,9 @@
 import axios from 'axios';
 
-const urlApi = 'http://localhost:8081/api/products';
+const urlApi = 'http://localhost:8081/api/products/searchedNFiltered';
 
 export default {
-   getProducts(page){
-      return axios.get(urlApi, { params: {strana: page}});
+   getProducts(page, condtion){
+      return axios.post(urlApi, condtion, { params: {strana: page}});
    }
 };

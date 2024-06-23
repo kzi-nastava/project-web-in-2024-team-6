@@ -41,7 +41,7 @@ import axios from 'axios';
           .get("http://localhost:8081/api/isLoged", {withCreditentials: true})
           .then((res) =>{
               if(res.data === true){
-                console.log("uso");
+                this.$forceUpdate();
                 this.loggedIn = true;
               } else {
                 console.log(res.data);
