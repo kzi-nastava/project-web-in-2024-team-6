@@ -23,7 +23,7 @@ public class KorisnikRestController {
     @Autowired
     private KorisnikService korisnikService;
 
-    @PostMapping("/login")
+    @PostMapping("/api/login")
     public ResponseEntity<String> login(@RequestBody LoginDto loginDto, HttpSession sesija) {
 
         if(loginDto.getKorisnickoIme() == null || loginDto.getLozinka() == null){
@@ -189,6 +189,14 @@ public class KorisnikRestController {
             return ResponseEntity.ok("Uspesno podneta prijava ");
         }
         return new ResponseEntity("Zabranjen pristup!",HttpStatus.FORBIDDEN);
+    }
+
+    @GetMapping("/api/isLoged")
+    public ResponseEntity<Boolean> isLoged(HttpSession sesija){
+        Korisnik korisnik = (Korisnik) sesija.getAttribute("korisnik");
+        if(korisnik == null) return ResponseEntity.ok(false);
+        else return ResponseEntity.ok( true);
+        //else return new ResponseEntity("Nema odgovora", HttpStatus.FORBIDDEN);
     }
 
 }
