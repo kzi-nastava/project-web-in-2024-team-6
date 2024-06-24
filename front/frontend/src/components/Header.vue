@@ -15,9 +15,9 @@
         Logout
       </button>
       <div v-if="loggedIn" class="img_border">
-        <a>
-          <img src="../assets/user.png" alt="avatar" class="avat">
-        </a>
+        <router-link to='/user'>
+          <img src="../assets/user.png" alt="avatar" class="avat" >
+        </router-link>
       </div>
         
      </div>
