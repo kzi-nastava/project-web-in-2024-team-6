@@ -3,6 +3,8 @@ import HomeView from '../views/HomeView.vue';
 import LoginView from '../views/LoginView.vue';
 import RegisterView from '@/views/RegisterView.vue';
 import UserView from '@/views/UserView.vue';
+import UsersView from '@/views/UsersView.vue';
+import SingleUserView from '@/views/SingleUserView.vue';
 
 const routes = [
   {
@@ -24,6 +26,17 @@ const routes = [
     path: '/user',
     name: 'user',
     component: UserView
+  },
+  {
+    path: '/users',
+    name: 'users',
+    component: UsersView
+  },
+  {
+    path: '/otherUser/:korisnikId',
+    name: 'otherUser',
+    component: SingleUserView,
+    props: true
   }
 ]
 

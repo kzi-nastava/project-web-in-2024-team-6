@@ -124,6 +124,21 @@ public class KorisnikRestController {
         if(korisnik.getUloga() == Korisnik.TipKorisnika.Prodavac || korisnik.getUloga() == Korisnik.TipKorisnika.Kupac){
             try{
                 Optional<Korisnik> k = korisnikService.nadjiPoId(id);
+                return new ResponseEntity(k,HttpStatus.OK);
+            }catch (Exception e){
+                return new ResponseEntity("Doslo je do greske",HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
+        return new ResponseEntity("Zabranjen pristup", HttpStatus.FORBIDDEN);
+    }
+
+    @GetMapping("/trenKorisnici/{id}")
+    public ResponseEntity<Korisnik> prikaziKorisnikaTren(@PathVariable("id") long id,HttpSession sesija){
+        Korisnik korisnik = (Korisnik) sesija.getAttribute("korisnik");
+        if(korisnik == null) return new ResponseEntity("Zabranjen pristup!",HttpStatus.FORBIDDEN);
+        if(korisnik.getUloga() == Korisnik.TipKorisnika.Prodavac || korisnik.getUloga() == Korisnik.TipKorisnika.Kupac){
+            try{
+                Optional<Korisnik> k = korisnikService.nadjiPoId(id);
                 return new ResponseEntity(korisnik,HttpStatus.OK);
             }catch (Exception e){
                 return new ResponseEntity("Doslo je do greske",HttpStatus.INTERNAL_SERVER_ERROR);

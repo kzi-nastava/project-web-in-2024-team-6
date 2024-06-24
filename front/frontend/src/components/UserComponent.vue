@@ -50,7 +50,7 @@
       methods: {
          getKorisnik() {
             axios
-               .get('http://localhost:8081/korisnici/1', {withCredentials: true})
+               .get('http://localhost:8081/trenKorisnici/1' , {withCredentials: true})
                .then((res) => {
                   this.korisnik = res.data;
                })
