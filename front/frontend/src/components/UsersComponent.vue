@@ -48,10 +48,10 @@ export default {
       width: 20%;
       justify-content: center;
       text-align: center;
-      background-color: rgba(128, 255, 0, 0.619);
+      background-color: #42b883;
       padding: 1%;
       border-radius: 10px;
-      box-shadow: 2px 2px rgba(0, 0, 0, 0.729);
+      box-shadow: 2px 2px #246347e2;
    }
    .listaUsera{
       display: flex;

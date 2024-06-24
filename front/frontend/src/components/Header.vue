@@ -1,5 +1,5 @@
 <template>
-   <header @click="chechLoginStatus">
+   <header @mousemove="chechLoginStatus">
      <img alt="logo" src="../assets/logo.png" class="logo" @click="redirectHome"/>
      <nav>
        <router-link to="/">Pocetna</router-link> |

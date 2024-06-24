@@ -277,6 +277,7 @@ public class ProizvodService {
     }
 
     public boolean obavljenaTrgovinaFiksnaCena(Proizvod proizvod, Korisnik korisnik) {
+        if(proizvod.getProdavac().getPrizvodi() == null) return false;
         proizvod.setProdat(true);
         if(save(proizvod) == null) return false;
         korisnik.getPrizvodi().add(proizvod);
