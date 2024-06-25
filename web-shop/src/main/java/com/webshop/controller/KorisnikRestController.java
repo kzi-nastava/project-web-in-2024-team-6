@@ -216,4 +216,15 @@ public class KorisnikRestController {
         //else return new ResponseEntity("Nema odgovora", HttpStatus.FORBIDDEN);
     }
 
+
+    @GetMapping("/api/isProdavac")
+    public ResponseEntity<Boolean> IsProdavac(HttpSession sesija) {
+        if(sesija.getAttribute("korisnik") == null) {
+            return ResponseEntity.ok(false);
+        }
+        Korisnik korisnik = (Korisnik) sesija.getAttribute("korisnik");
+        if(korisnik.getUloga() != Korisnik.TipKorisnika.Prodavac) return ResponseEntity.ok(false);
+        return ResponseEntity.ok( true);
+    }
+
 }

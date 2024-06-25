@@ -26,7 +26,9 @@ export default {
             this.korisnici = res.data;
          })
          .catch((err) => {
-            alert(err);
+            if(err.response.status === 403) alert('morate biti ulogovani!');
+            else alert('doslo je do grreske');
+            this.$router.push('/');
          })
    },
    methods: {

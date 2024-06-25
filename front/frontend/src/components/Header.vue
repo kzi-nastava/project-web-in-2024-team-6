@@ -3,7 +3,8 @@
      <img alt="logo" src="../assets/logo.png" class="logo" @click="redirectHome"/>
      <nav>
        <router-link to="/">Pocetna</router-link> |
-       <router-link to="/users">Korisnici</router-link>
+       <router-link to="/users">Korisnici</router-link> |
+       <router-link to="/addProduct">Dodaj proizvod</router-link>
      </nav>
      <div class ="loginRegister" >
        <button v-if="!loggedIn" @click="redirect">

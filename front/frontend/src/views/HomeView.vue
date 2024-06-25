@@ -2,6 +2,7 @@
   <button v-if="!sif" class="prikaziFiltere" @click="showSNF">
     Prikazi filtere  
   </button>
+  <button @click="submit">Update </button>
   <div v-if="sif" class="serachFilterBox">
     <div>
       <label>Ime ili opis:</label><br>
