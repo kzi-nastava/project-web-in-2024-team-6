@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import axios form 'axios';
+import axios from 'axios';
 
 export default {
    name: 'updateProd',
