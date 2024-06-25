@@ -23,7 +23,7 @@ public class KorisnikRestController {
     @Autowired
     private KorisnikService korisnikService;
 
-    @PostMapping("/login")
+    @PostMapping("/api/login")
     public ResponseEntity<String> login(@RequestBody LoginDto loginDto, HttpSession sesija) {
 
         if(loginDto.getKorisnickoIme() == null || loginDto.getLozinka() == null){
@@ -132,6 +132,21 @@ public class KorisnikRestController {
         return new ResponseEntity("Zabranjen pristup", HttpStatus.FORBIDDEN);
     }
 
+    @GetMapping("/trenKorisnici/{id}")
+    public ResponseEntity<Korisnik> prikaziKorisnikaTren(@PathVariable("id") long id,HttpSession sesija){
+        Korisnik korisnik = (Korisnik) sesija.getAttribute("korisnik");
+        if(korisnik == null) return new ResponseEntity("Zabranjen pristup!",HttpStatus.FORBIDDEN);
+        if(korisnik.getUloga() == Korisnik.TipKorisnika.Prodavac || korisnik.getUloga() == Korisnik.TipKorisnika.Kupac){
+            try{
+                Optional<Korisnik> k = korisnikService.nadjiPoId(id);
+                return new ResponseEntity(korisnik,HttpStatus.OK);
+            }catch (Exception e){
+                return new ResponseEntity("Doslo je do greske",HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
+        return new ResponseEntity("Zabranjen pristup", HttpStatus.FORBIDDEN);
+    }
+
     @PostMapping("/api/oceni")
     public ResponseEntity oceniKorisnika(@RequestBody RecenzijaDto recenzijaDto, HttpSession session){
         if(recenzijaDto.getKomentar() == null || recenzijaDto.getProizvodDto() == null) return new ResponseEntity("Los zahtev je psolat!" ,HttpStatus.BAD_REQUEST);
@@ -189,6 +204,27 @@ public class KorisnikRestController {
             return ResponseEntity.ok("Uspesno podneta prijava ");
         }
         return new ResponseEntity("Zabranjen pristup!",HttpStatus.FORBIDDEN);
+    }
+
+    @GetMapping("/api/isLoged")
+    public ResponseEntity<Boolean> isLoged(HttpSession sesija){
+        Korisnik korisnik = (Korisnik) sesija.getAttribute("korisnik");
+        if(sesija.getAttribute("korisnik") == null) {
+            return ResponseEntity.ok(false);
+        }
+        else return ResponseEntity.ok( true);
+        //else return new ResponseEntity("Nema odgovora", HttpStatus.FORBIDDEN);
+    }
+
+
+    @GetMapping("/api/isProdavac")
+    public ResponseEntity<Boolean> IsProdavac(HttpSession sesija) {
+        if(sesija.getAttribute("korisnik") == null) {
+            return ResponseEntity.ok(false);
+        }
+        Korisnik korisnik = (Korisnik) sesija.getAttribute("korisnik");
+        if(korisnik.getUloga() != Korisnik.TipKorisnika.Prodavac) return ResponseEntity.ok(false);
+        return ResponseEntity.ok( true);
     }
 
 }
