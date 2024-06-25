@@ -28,6 +28,28 @@
       <button @click="update">
          Azuriraj Korisnika
       </button>
+      <br>
+      <button @click="showRecenzije1">Pregledaj recenzije koji si dao</button>
+      <div class="listaRecenzijaDato">
+         <h2>Date Recenzije</h2>
+         <div class="recenzija" v-for="recenzija in dateRecenzije">
+            <h4>Recenzija: {{ recenzija.id }}</h4>
+            <h6>{{ recenzija.ocena }}</h6>
+            <p>{{ recenzija.komentar }}</p>
+         </div>
+         <p v-if="dateRecenzije.length == 0"> Trnutno nema recenzija</p>
+      </div> 
+      <br>
+      <button @click="showRecenzije2">Pregledaj recenzije koji si dobio</button>
+      <div class="listaRecenzijaPrimljeno">
+         <h2>Primljene Recenzije</h2>
+         <div class="recenzija" v-for="recenzija in primljeneRecenzije">
+            <h4>Recenzija: {{ recenzija.id }}</h4>
+            <h6>{{ recenzija.ocena }}</h6>
+            <p>{{ recenzija.komentar }}</p>
+         </div>
+         <p v-if="primljeneRecenzije.length == 0"> Trnutno nema recenzija</p>
+      </div> 
    </div>
 </template>
 
@@ -41,7 +63,9 @@
             korisnik: {},
             azuriranKorisnik: {},
             passOMT: "",
-            idK: 0
+            idK: 0,
+            dateRecenzije: [],
+            primljeneRecenzije: []
          };
       },
       mounted() {
@@ -87,6 +111,26 @@
                   alert('Neuspesno azuriranje, probajte ponovo');
                })
             } 
+         },
+         showRecenzije1(){
+            axios
+               .get('http://localhost:8081/api/pregledajDateRecenzije', {withCredentials: true})
+               .then((res) => {
+                  this.dateRecenzije = res.data
+               })
+               .catch((error) => {
+                  alert('Niste ulogovani kao kupac ili prodavac');
+               });
+         },
+         showRecenzije2() {
+            axios
+               .get('http://localhost:8081/api/pregledajPrimljeneRecenzije', {withCredentials: true})
+               .then((res) => {
+                  this.dateRecenzije = res.data
+               })
+               .catch((error) => {
+                  alert('Niste ulogovani kao kupac ili prodavac');
+               });
          }
       }
    }

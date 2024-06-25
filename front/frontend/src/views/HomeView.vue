@@ -111,15 +111,15 @@ export default {
         });
     },
     nextPage() {
-      if(page < this.totalPages){
+      if(this.page < this.totalPages){
         this.page++;
-        this.fetchProducts();
+        this.submit();
       }
     },
     prevPage() {
       if(this.page > 0){
         this.page--;
-        this.fetchProducts();
+        this.submit();
       }
     },
     plantSelect(){
