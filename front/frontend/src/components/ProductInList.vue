@@ -22,6 +22,11 @@
          <div class="buyBtn" v-if="tipp" @click="prodBuy">
             Kupi odmah 
          </div>
+         <div class="ponuda" v-if="!tipp">
+            <label>Postavite ponudu</label>
+            <input type="number" v-model="ponuda">
+            <button @click="prodOffer">Predaj ponudu</button>
+         </div>
       </div>
    </div>
       
@@ -33,7 +38,7 @@ import axios from 'axios';
 export default{
    name: 'ProductInList',
    data(){
-      return {extended: false, tipp: this.product.tipProdaje == 'fiksnaCena' ? true : false }
+      return {extended: false, tipp: this.product.tipProdaje == 'fiksnaCena' ? true : false, ponuda: 0 }
    },
    props: {
       product: {
@@ -58,6 +63,20 @@ export default{
                } else if (error.response.data === 'Zabranjen pristup'){
                   alert('Proizvod nije kupljen jer niste kupac')
                } else if (error.response.status === 500) alert('Proizvod nije kupljen jer je doslo do greske');
+            });
+      },
+      prodOffer(){
+         axios
+            .post('http://localhost:8081/api/products/api/offer/' +  this.ponuda , this.product, {withCredentials: true})
+            .then((res) => {
+               alert('Uspesno postavljena ponuda za proizvod');
+            })
+            .catch((error) => {
+               if(error.response.data === 'Prozivod ne postoji!'){
+                  alert('Proizvod ne postoji')
+               } else if (error.response.data === 'Zabranjen pristup'){
+                  alert('Proizvod nije kupljen jer niste kupac')
+               } else if (error.response.status === 500) alert('Proizvod nije kupljen jer je doslo do greske, probajte vecu ponudu');
             });
       }
    }
