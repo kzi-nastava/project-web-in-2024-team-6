@@ -111,7 +111,7 @@ public class ProizvodRestController {
         Korisnik korisnik = (Korisnik) sesija.getAttribute("korisnik");
         if (korisnik == null) return new ResponseEntity("Zabranjen pristup", HttpStatus.FORBIDDEN);
         if(korisnik.getUloga() == Korisnik.TipKorisnika.Prodavac){
-            Proizvod proizvod = proizvodService.postaviProizvodNaProdaju(proizvodDto);
+            Proizvod proizvod = proizvodService.postaviProizvodNaProdaju(proizvodDto, korisnik.getId());
             return ResponseEntity.ok(proizvod);
         }
         return new ResponseEntity("Zabranjen pristup", HttpStatus.FORBIDDEN);
@@ -197,6 +197,7 @@ public class ProizvodRestController {
 
         return new ResponseEntity("Zabranjen pristup", HttpStatus.FORBIDDEN);
     }
+
     @PostMapping("/api/offer/{ponuda}")
     public ResponseEntity<Proizvod> kupovina(@RequestBody ProizvodDto proizvodDto, @PathVariable BigDecimal ponuda, HttpSession sesija){
         if(sesija.getAttribute("korisnik") == null) return new ResponseEntity("Zabranjen pristup", HttpStatus.FORBIDDEN);

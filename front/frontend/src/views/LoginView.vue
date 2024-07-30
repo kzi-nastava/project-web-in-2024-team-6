@@ -8,7 +8,7 @@
          </tr>
          <tr>
             <td>
-               <input v-model="loginDto.korisnickoIme">      
+               <input v-model="loginDto.korisnickoIme" required>      
             </td>
          </tr>
          <br>
@@ -19,7 +19,7 @@
          </tr>
          <tr>
             <td>
-               <input v-model="loginDto.lozinka" type="password">     
+               <input v-model="loginDto.lozinka" type="password" required>     
             </td>
          </tr>
          <br>
@@ -62,7 +62,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
    table{
       width: auto;
       margin-left: auto;

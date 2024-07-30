@@ -164,7 +164,7 @@ public class ProizvodService {
     @Autowired
     private KorisnikRepository korisnikRepository;
 
-    public Proizvod postaviProizvodNaProdaju(ProizvodDto proizvodDto) {
+    public Proizvod postaviProizvodNaProdaju(ProizvodDto proizvodDto, Long id) {
         Kategorija kategorija = kategorijaRepository.findByNaziv(proizvodDto.getKategorija().getNaziv());
         if (kategorija == null) {
             kategorija = new Kategorija();
@@ -175,7 +175,7 @@ public class ProizvodService {
         System.out.println(proizvodDto.getId());
         System.out.println(proizvodDto.getOpis());
         System.out.println(proizvodDto.getNaziv());*/
-        Korisnik prodavac = korisnikRepository.findById(proizvodDto.getProdavacId()).orElseThrow(() ->
+        Korisnik prodavac = korisnikRepository.findById(id).orElseThrow(() ->
                 new IllegalArgumentException("Prodavac sa ID-jem " + proizvodDto.getProdavacId() + " ne postoji."));
 
         Proizvod proizvod = new Proizvod();
@@ -223,9 +223,11 @@ public class ProizvodService {
         proizvod.setProdat(true);
 
 
-        proizvodRepository.save(proizvod);
-        korisnikRepository.save(kupac);
         korisnikRepository.save(prodavac);
+        korisnikRepository.save(kupac);
+        proizvodRepository.save(proizvod);
+
+        System.out.println("puca pre ovog");
 
         String subject = "Aukcija završena";
         String body = "Aukcija za proizvod " + proizvod.getNaziv() + " je završena. Pobednik je " + kupac.getIme() + " " + kupac.getPrezime() + " sa ponudom od " + poslednjaPonuda.getCena() + " dinara.";
@@ -275,6 +277,7 @@ public class ProizvodService {
     }
 
     public boolean obavljenaTrgovinaFiksnaCena(Proizvod proizvod, Korisnik korisnik) {
+        if(proizvod.getProdavac() == null) return false;
         proizvod.setProdat(true);
         if(save(proizvod) == null) return false;
         korisnik.getPrizvodi().add(proizvod);

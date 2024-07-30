@@ -1,76 +1,75 @@
 <template>
-  <button v-if="!sif" class="prikaziFiltere" @click="showSNF">
-    Prikazi filtere  
-  </button>
-  <button @click="submit">Update </button>
-  <div v-if="sif" class="serachFilterBox">
-    <div>
-      <label>Ime ili opis:</label><br>
-      <input type="text" v-model="searchDto.imeopis">
-    </div>
-    <div>
-      <label>Cena od: </label><br>
-      <input type="number" v-model="searchDto.cenaod">
-    </div>
-    <div>
-      <label>Cena do: </label><br>
-      <input type="number" v-model="searchDto.cenado">
-    </div>
-    <div>
-      <label>Kategorija: </label><br>
-      <select v-model="searchDto.kategorija.id"> 
-        <option v-for="option in options" :key="option.id" :value="option.id" @change="findRightCategory">
-           {{ option.naziv }}
-        </option>
-     </select>
-    </div>
-    <div>
-      <label>Tip prodaje: </label><br>
-      <select v-model="searchDto.tipP">
-        <option value="">
-           izaberi tip prodaje
-        </option> 
-        <option>
-           aukcija
-        </option>
-        <option value="fiksnaCena">
-           fiksna cena
-        </option>
-     </select>
-    </div>
-    <div>
-      <label>Flegovi </label><br>
-      <input type="text" v-model="searchDto.flagovi">
-    </div>
-    <button @click="submit">
-       Trazi
-    </button>
-    <button @click="showSNF">
-      Zatvori filtere
+   <button v-if="!sif" class="prikaziFiltere" @click="showSNF">
+     Prikazi filtere  
    </button>
- </div>
-  <div class="home">
-    <div class="products">
-      <ProductInList v-for="product in products" :key="product.id" :product="product" />
-    </div>
-    <div class="pagination">
-      <button @click="prevPage" :disabled="page === 0">Previous</button>
-      <span>Page {{ page }}</span>
-      <button @click="nextPage" :disabled="page === totalPages - 1">Next</button>
-    </div>
+   <div v-if="sif" class="serachFilterBox">
+     <div>
+       <label>Ime ili opis:</label><br>
+       <input type="text" v-model="searchDto.imeopis">
+     </div>
+     <div>
+       <label>Cena od: </label><br>
+       <input type="number" v-model="searchDto.cenaod">
+     </div>
+     <div>
+       <label>Cena do: </label><br>
+       <input type="number" v-model="searchDto.cenado">
+     </div>
+     <div>
+       <label>Kategorija: </label><br>
+       <select v-model="searchDto.kategorija.id"> 
+         <option v-for="option in options" :key="option.id" :value="option.id" @change="findRightCategory">
+            {{ option.naziv }}
+         </option>
+      </select>
+     </div>
+     <div>
+       <label>Tip prodaje: </label><br>
+       <select v-model="searchDto.tipP">
+         <option value="">
+            izaberi tip prodaje
+         </option> 
+         <option>
+            aukcija
+         </option>
+         <option value="fiksnaCena">
+            fiksna cena
+         </option>
+      </select>
+     </div>
+     <div>
+       <label>Flegovi </label><br>
+       <input type="text" v-model="searchDto.flagovi">
+     </div>
+     <button @click="submit">
+        Trazi
+     </button>
+     <button @click="showSNF">
+       Zatvori filtere
+    </button>
   </div>
-</template>
+   <div class="home">
+     <div class="products">
+       <ProductInList v-for="product in products" :key="product.id" :product="product" />
+     </div>
+     <div class="pagination">
+       <button @click="prevPage" :disabled="page === 0">Previous</button>
+       <span>Page {{ page }}</span>
+       <button @click="nextPage" :disabled="page === totalPages - 1">Next</button>
+     </div>
+   </div>
+ </template>
 
-<script>
+ <script>
 // @ is an alias to /src
-import ProductInList from '@/components/ProductInList.vue';
+import product from '@/components/ProductComponent.vue';
 import ProductServiece from '@/services/ProductService.js';
 import axios from 'axios';
 
 export default {
-  name: 'HomeView',
+  name: 'ProductsComponent',
   components: {
-    ProductInList
+    product
   },
   data() {
     return {
@@ -111,15 +110,15 @@ export default {
         });
     },
     nextPage() {
-      if(this.page < this.totalPages){
+      if(page < this.totalPages){
         this.page++;
-        this.submit();
+        this.fetchProducts();
       }
     },
     prevPage() {
       if(this.page > 0){
         this.page--;
-        this.submit();
+        this.fetchProducts();
       }
     },
     plantSelect(){
